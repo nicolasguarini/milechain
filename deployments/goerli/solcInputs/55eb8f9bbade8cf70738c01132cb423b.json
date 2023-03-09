@@ -1,0 +1,35 @@
+{
+  "language": "Solidity",
+  "sources": {
+    "contracts/TrueMile.sol": {
+      "content": "// SPDX-License-Identifier: GNU\r\npragma solidity ^0.8.9;\r\n\r\ncontract MileChain {\r\n    struct Car {\r\n        string licensePlate;\r\n        address owner;\r\n        uint256 mileage;\r\n    }\r\n\r\n    mapping(string => Car) private cars;\r\n    mapping(string => uint256[]) private mileageRecords;\r\n    mapping(string => address[]) private ownersRecords;\r\n\r\n    function addCar(string memory licensePlate, uint256 mileage) public {\r\n        require(cars[licensePlate].owner == address(0), \"Car already exists\");\r\n        Car memory newCar = Car(licensePlate, msg.sender, mileage);\r\n        cars[licensePlate] = newCar;\r\n        mileageRecords[licensePlate].push(mileage);\r\n        ownersRecords[licensePlate].push(msg.sender);\r\n    }\r\n\r\n    function updateMileage(string memory licensePlate, uint256 mileage) public {\r\n        require(\r\n            cars[licensePlate].owner == msg.sender,\r\n            \"You do not own this car\"\r\n        );\r\n        require(\r\n            mileage > cars[licensePlate].mileage,\r\n            \"New mileage must be greater than current mileage\"\r\n        );\r\n        cars[licensePlate].mileage = mileage;\r\n        mileageRecords[licensePlate].push(mileage);\r\n    }\r\n\r\n    function getCarByLicencePlate(\r\n        string memory licensePlate\r\n    ) public view returns (string memory, address, uint256) {\r\n        require(cars[licensePlate].owner != address(0), \"Car not found\");\r\n        return (\r\n            cars[licensePlate].licensePlate,\r\n            cars[licensePlate].owner,\r\n            cars[licensePlate].mileage\r\n        );\r\n    }\r\n\r\n    function getLatestMileage(\r\n        string memory licensePlate\r\n    ) public view returns (uint256) {\r\n        require(cars[licensePlate].owner != address(0), \"Car not found\");\r\n        uint256[] memory records = mileageRecords[licensePlate];\r\n        if (records.length == 0) {\r\n            return cars[licensePlate].mileage;\r\n        } else {\r\n            return records[records.length - 1];\r\n        }\r\n    }\r\n\r\n    function getMileageRecord(\r\n        string memory licensePlate\r\n    ) public view returns (uint256[] memory) {\r\n        require(cars[licensePlate].owner != address(0), \"Car not found\");\r\n        return mileageRecords[licensePlate];\r\n    }\r\n\r\n    function changeOwner(string memory licensePlate, address newOwner) public {\r\n        require(cars[licensePlate].owner != address(0), \"Car not found\");\r\n        cars[licensePlate].owner = newOwner;\r\n        ownersRecords[licensePlate].push(newOwner);\r\n    }\r\n\r\n    function getOwners(\r\n        string memory licensePlate\r\n    ) public view returns (address[] memory) {\r\n        require(cars[licensePlate].owner != address(0), \"Car not found\");\r\n        return ownersRecords[licensePlate];\r\n    }\r\n}\r\n"
+    }
+  },
+  "settings": {
+    "optimizer": {
+      "enabled": false,
+      "runs": 200
+    },
+    "outputSelection": {
+      "*": {
+        "*": [
+          "abi",
+          "evm.bytecode",
+          "evm.deployedBytecode",
+          "evm.methodIdentifiers",
+          "metadata",
+          "devdoc",
+          "userdoc",
+          "storageLayout",
+          "evm.gasEstimates"
+        ],
+        "": [
+          "ast"
+        ]
+      }
+    },
+    "metadata": {
+      "useLiteralContent": true
+    }
+  }
+}
