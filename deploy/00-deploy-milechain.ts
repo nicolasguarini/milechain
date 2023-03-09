@@ -12,7 +12,7 @@ const deployContract: DeployFunction = async function (hre: HardhatRuntimeEnviro
         ? 1
         : VERIFICATION_BLOCK_CONFIRMATIONS;
 
-    const contract = await deploy("TrueMile", {
+    const contract = await deploy("MileChain", {
         from: deployer,
         args: [],
         log: true,
