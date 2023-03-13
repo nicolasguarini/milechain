@@ -18,11 +18,16 @@ contract MileChain is Owned {
         uint256 mileage;
     }
 
+    struct mileageRecord{
+        uint256[] miles;
+        uint256 [] times;
+    }
+
     /**
      * @dev Define mappings to keep track of vehicles, their mileage records, and owners.
      */
     mapping(string => Vehicle) private vehicles;
-    mapping(string => uint256[]) private mileageRecords;
+    mapping(string => mileageRecord) private mileageRecords;
     mapping(string => address[]) private ownersRecords;
 
     /**
@@ -41,7 +46,11 @@ contract MileChain is Owned {
         );
         Vehicle memory newVehicle = Vehicle(licensePlate, msg.sender, mileage);
         vehicles[licensePlate] = newVehicle;
-        mileageRecords[licensePlate].push(mileage);
+        uint256[] memory miles = new uint256[](1);
+        uint256[] memory times =  new uint256[](1);
+        miles[0]=mileage;
+        times[0]=block.timestamp;
+        mileageRecords[licensePlate]= mileageRecord(miles,times);
         ownersRecords[licensePlate].push(msg.sender);
     }
 
@@ -64,7 +73,8 @@ contract MileChain is Owned {
             "Contract is in read-only mode for security reasons."
         );
         vehicles[licensePlate].mileage = mileage;
-        mileageRecords[licensePlate].push(mileage);
+        mileageRecords[licensePlate].miles.push(mileage);
+        mileageRecords[licensePlate].times.push(block.timestamp);
     }
 
     /**
@@ -113,12 +123,12 @@ contract MileChain is Owned {
      */
     function getMileageRecord(
         string memory licensePlate
-    ) public view returns (uint256[] memory) {
+    ) public view returns (uint256[] memory,uint256[] memory) {
         require(
             vehicles[licensePlate].owner != address(0),
             "Vehicle not found"
         );
-        return mileageRecords[licensePlate];
+        return ( mileageRecords[licensePlate].miles, mileageRecords[licensePlate].times);
     }
 
     /**
