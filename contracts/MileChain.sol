@@ -27,11 +27,19 @@ contract MileChain is Owned {
     }
 
     /**
+     * @dev Define the OwnersRecord struct with owner address and unix timestamp.
+     */
+    struct OwnersRecord {
+        address owner;
+        uint256 timestamp;
+    }
+
+    /**
      * @dev Define mappings to keep track of vehicles, their mileage records, and owners.
      */
     mapping(string => Vehicle) private vehicles;
     mapping(string => MileageRecord[]) private mileageRecords;
-    mapping(string => address[]) private ownersRecords;
+    mapping(string => OwnersRecord[]) private ownersRecords;
 
     /**
      * Function to add a new vehicle
@@ -52,7 +60,9 @@ contract MileChain is Owned {
         mileageRecords[licensePlate].push(
             MileageRecord(mileage, block.timestamp)
         );
-        ownersRecords[licensePlate].push(msg.sender);
+        ownersRecords[licensePlate].push(
+            OwnersRecord(msg.sender, block.timestamp)
+        );
     }
 
     /**
@@ -96,7 +106,9 @@ contract MileChain is Owned {
         );
 
         vehicles[licensePlate].owner = newOwner;
-        ownersRecords[licensePlate].push(newOwner);
+        ownersRecords[licensePlate].push(
+            OwnersRecord(newOwner, block.timestamp)
+        );
     }
 
     /**
@@ -111,6 +123,7 @@ contract MileChain is Owned {
             vehicles[licensePlate].owner != address(0),
             "Vehicle not found"
         );
+
         return vehicles[licensePlate];
     }
 
@@ -137,7 +150,7 @@ contract MileChain is Owned {
      */
     function getOwnersRecords(
         string memory licensePlate
-    ) public view returns (address[] memory) {
+    ) public view returns (OwnersRecord[] memory) {
         require(
             vehicles[licensePlate].owner != address(0),
             "Vehicle not found"
