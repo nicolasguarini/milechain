@@ -18,16 +18,19 @@ contract MileChain is Owned {
         uint256 mileage;
     }
 
-    struct mileageRecord{
-        uint256[] miles;
-        uint256 [] times;
+    /**
+     * @dev Define the MileageRecord struct with mileage and unix timestamp.
+     */
+    struct MileageRecord {
+        uint256 mileage;
+        uint256 timestamp;
     }
 
     /**
      * @dev Define mappings to keep track of vehicles, their mileage records, and owners.
      */
     mapping(string => Vehicle) private vehicles;
-    mapping(string => mileageRecord) private mileageRecords;
+    mapping(string => MileageRecord[]) private mileageRecords;
     mapping(string => address[]) private ownersRecords;
 
     /**
@@ -44,13 +47,11 @@ contract MileChain is Owned {
             !safeMode,
             "Contract is in read-only mode for security reasons."
         );
-        Vehicle memory newVehicle = Vehicle(licensePlate, msg.sender, mileage);
-        vehicles[licensePlate] = newVehicle;
-        uint256[] memory miles = new uint256[](1);
-        uint256[] memory times =  new uint256[](1);
-        miles[0]=mileage;
-        times[0]=block.timestamp;
-        mileageRecords[licensePlate]= mileageRecord(miles,times);
+
+        vehicles[licensePlate] = Vehicle(licensePlate, msg.sender, mileage);
+        mileageRecords[licensePlate].push(
+            MileageRecord(mileage, block.timestamp)
+        );
         ownersRecords[licensePlate].push(msg.sender);
     }
 
@@ -72,9 +73,11 @@ contract MileChain is Owned {
             !safeMode,
             "Contract is in read-only mode for security reasons."
         );
+
         vehicles[licensePlate].mileage = mileage;
-        mileageRecords[licensePlate].miles.push(mileage);
-        mileageRecords[licensePlate].times.push(block.timestamp);
+        mileageRecords[licensePlate].push(
+            MileageRecord(mileage, block.timestamp)
+        );
     }
 
     /**
@@ -91,6 +94,7 @@ contract MileChain is Owned {
             !safeMode,
             "Contract is in read-only mode for security reasons."
         );
+
         vehicles[licensePlate].owner = newOwner;
         ownersRecords[licensePlate].push(newOwner);
     }
@@ -98,22 +102,16 @@ contract MileChain is Owned {
     /**
      * Function to get the owner and the latest mileage of a vehicle
      * @param licensePlate The licence plate of the vehicle
-     * @return The licence plate of the vehicle
-     * @return The owner's address of the vehicle
-     * @return The current mileage of the vehicle
+     * @return The searched vehicle struct
      */
     function getVehicleByLicencePlate(
         string memory licensePlate
-    ) public view returns (string memory, address, uint256) {
+    ) public view returns (Vehicle memory) {
         require(
             vehicles[licensePlate].owner != address(0),
             "Vehicle not found"
         );
-        return (
-            vehicles[licensePlate].licensePlate,
-            vehicles[licensePlate].owner,
-            vehicles[licensePlate].mileage
-        );
+        return vehicles[licensePlate];
     }
 
     /**
@@ -123,12 +121,13 @@ contract MileChain is Owned {
      */
     function getMileageRecord(
         string memory licensePlate
-    ) public view returns (uint256[] memory,uint256[] memory) {
+    ) public view returns (MileageRecord[] memory) {
         require(
             vehicles[licensePlate].owner != address(0),
             "Vehicle not found"
         );
-        return ( mileageRecords[licensePlate].miles, mileageRecords[licensePlate].times);
+
+        return mileageRecords[licensePlate];
     }
 
     /**
@@ -143,6 +142,7 @@ contract MileChain is Owned {
             vehicles[licensePlate].owner != address(0),
             "Vehicle not found"
         );
+
         return ownersRecords[licensePlate];
     }
 }
