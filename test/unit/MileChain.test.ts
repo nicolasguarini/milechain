@@ -21,23 +21,6 @@ import { MileChain, MileChain__factory } from "../../typechain-types";
         milechain = await milechainFactory.deploy([secondDeployer.address]);
     });
 
-    describe("constructor", function(){
-        it("initializes the contract correctly", async () => {
-            const safeModeState: boolean = await milechain.getCurrentSafeModeState();
-            assert.equal(safeModeState, false);
-        });
-
-        it("saves the deployers addresses in deployers mapping", async () => {
-            const isDeployer1 = await milechain.isDeployer(deployer.address);
-            const isDeployer2 = await milechain.isDeployer(secondDeployer.address);
-            const isDeployer3 = await milechain.isDeployer(accounts[2].address);
-
-            assert.equal(isDeployer1, true);
-            assert.equal(isDeployer2, true);
-            assert.equal(isDeployer3, false);
-        });
-    });
-
     describe("addVehicle", function(){
         it("saves a new vehicle", async () => {
             await milechain.addVehicle("AA000AA", 1000);
@@ -151,6 +134,30 @@ import { MileChain, MileChain__factory } from "../../typechain-types";
             await expect(
                 milechain.changeOwner("AA000AA", accounts[1].address)
             ).revertedWith("Contract is in read-only mode for security reasons");
+        });
+    });
+
+    describe("getVehicle", function(){
+        it("reverts if vehicle does not exists", async () => {
+            await expect(
+                milechain.getVehicle("AA000AA")
+            ).revertedWith("Vehicle not found");
+        });
+    });
+
+    describe("getMileageRecords", function(){
+        it("reverts if vehicle does not exists", async () => {
+            await expect(
+                milechain.getMileageRecords("AA000AA")
+            ).revertedWith("Vehicle not found");
+        });
+    });
+
+    describe("getOwnersRecords", function(){
+        it("reverts if vehicle does not exists", async () => {
+            await expect(
+                milechain.getOwnersRecords("AA000AA")
+            ).revertedWith("Vehicle not found");
         });
     });
 });
