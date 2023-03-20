@@ -21,7 +21,7 @@ const deployContract: DeployFunction = async function (hre: HardhatRuntimeEnviro
 
     if (!developmentChains.includes(network.name) && process.env.ETHERSCAN_API_KEY) {
         log("Verifying...");
-        await verify(contract.address, []);
+        await verify(contract.address, [[]]);
     }
 }
 
