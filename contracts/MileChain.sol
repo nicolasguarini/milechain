@@ -4,7 +4,7 @@ pragma solidity ^0.8.18;
 import "./Owned.sol";
 
 /**
- * A contract for keeping track of mileage records for vehicles.
+ * A contract for keeping track of mileage records for _vehicles.
  * @title MileChain
  * @author Nicolas Guarini, Lorenzo Ficazzola
  */
@@ -37,11 +37,15 @@ contract MileChain is Owned {
     /**
      * @dev Define mappings to keep track of vehicles, their mileage records, and owners.
      */
-    mapping(string => Vehicle) private vehicles;
-    mapping(string => MileageRecord[]) private mileageRecords;
-    mapping(string => OwnersRecord[]) private ownersRecords;
+    mapping(string => Vehicle) private _vehicles;
+    mapping(string => MileageRecord[]) private _mileageRecords;
+    mapping(string => OwnersRecord[]) private _ownersRecords;
 
-    constructor(address[] memory _deployers) Owned(_deployers) public {}
+    /**
+     * Default constructor, does nothing apart passing the parameter to Owned's constructor
+     * @param deployers Initial deployers array
+     */
+    constructor(address[] memory deployers) Owned(deployers) {}
 
     /**
      * Function to add a new vehicle
@@ -50,19 +54,19 @@ contract MileChain is Owned {
      */
     function addVehicle(string memory licensePlate, uint256 mileage) public {
         require(
-            vehicles[licensePlate].owner == address(0),
+            _vehicles[licensePlate].owner == address(0),
             "Vehicle already exists"
         );
         require(
-            !safeMode,
+            !_safeMode,
             "Contract is in read-only mode for security reasons."
         );
 
-        vehicles[licensePlate] = Vehicle(licensePlate, msg.sender, mileage);
-        mileageRecords[licensePlate].push(
+        _vehicles[licensePlate] = Vehicle(licensePlate, msg.sender, mileage);
+        _mileageRecords[licensePlate].push(
             MileageRecord(mileage, block.timestamp)
         );
-        ownersRecords[licensePlate].push(
+        _ownersRecords[licensePlate].push(
             OwnersRecord(msg.sender, block.timestamp)
         );
     }
@@ -74,20 +78,20 @@ contract MileChain is Owned {
      */
     function updateMileage(string memory licensePlate, uint256 mileage) public {
         require(
-            vehicles[licensePlate].owner == msg.sender,
+            _vehicles[licensePlate].owner == msg.sender,
             "You do not own this vehicle"
         );
         require(
-            mileage > vehicles[licensePlate].mileage,
+            mileage > _vehicles[licensePlate].mileage,
             "New mileage must be greater than current mileage"
         );
         require(
-            !safeMode,
+            !_safeMode,
             "Contract is in read-only mode for security reasons."
         );
 
-        vehicles[licensePlate].mileage = mileage;
-        mileageRecords[licensePlate].push(
+        _vehicles[licensePlate].mileage = mileage;
+        _mileageRecords[licensePlate].push(
             MileageRecord(mileage, block.timestamp)
         );
     }
@@ -99,16 +103,16 @@ contract MileChain is Owned {
      */
     function changeOwner(string memory licensePlate, address newOwner) public {
         require(
-            vehicles[licensePlate].owner != address(0),
+            _vehicles[licensePlate].owner != address(0),
             "Vehicle not found"
         );
         require(
-            !safeMode,
+            !_safeMode,
             "Contract is in read-only mode for security reasons."
         );
 
-        vehicles[licensePlate].owner = newOwner;
-        ownersRecords[licensePlate].push(
+        _vehicles[licensePlate].owner = newOwner;
+        _ownersRecords[licensePlate].push(
             OwnersRecord(newOwner, block.timestamp)
         );
     }
@@ -118,15 +122,15 @@ contract MileChain is Owned {
      * @param licensePlate The licence plate of the vehicle
      * @return The searched vehicle struct
      */
-    function getVehicleByLicencePlate(
+    function getVehicle(
         string memory licensePlate
     ) public view returns (Vehicle memory) {
         require(
-            vehicles[licensePlate].owner != address(0),
+            _vehicles[licensePlate].owner != address(0),
             "Vehicle not found"
         );
 
-        return vehicles[licensePlate];
+        return _vehicles[licensePlate];
     }
 
     /**
@@ -138,11 +142,11 @@ contract MileChain is Owned {
         string memory licensePlate
     ) public view returns (MileageRecord[] memory) {
         require(
-            vehicles[licensePlate].owner != address(0),
+            _vehicles[licensePlate].owner != address(0),
             "Vehicle not found"
         );
 
-        return mileageRecords[licensePlate];
+        return _mileageRecords[licensePlate];
     }
 
     /**
@@ -154,10 +158,10 @@ contract MileChain is Owned {
         string memory licensePlate
     ) public view returns (OwnersRecord[] memory) {
         require(
-            vehicles[licensePlate].owner != address(0),
+            _vehicles[licensePlate].owner != address(0),
             "Vehicle not found"
         );
 
-        return ownersRecords[licensePlate];
+        return _ownersRecords[licensePlate];
     }
 }
