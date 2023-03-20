@@ -81,15 +81,28 @@ import { MileChain, MileChain__factory } from "../../typechain-types";
     });
 
     describe("updateMileage", function(){
+        it("updates the miles correctly", async() =>{
+            await milechain.addVehicle("AA000AA", 1000);
+            await milechain.updateMileage("AA000AA", 10000);
+            const vehicle:MileChain.VehicleStruct = await milechain.getVehicle("AA000AA");
+            const vehicleRecord:MileChain.MileageRecordStruct[] = await milechain.getMileageRecords("AA000AA");
+            
+            assert.equal(vehicle.mileage, 10000);
+            assert.equal(vehicleRecord[0].mileage, 1000);
+            assert.equal(vehicleRecord[1].mileage, 10000);
+        });
+
         it("reverts if you are not the owner", async() => {
             await milechain.addVehicle("AA000AA", 1000);
+
             await expect(
-                milechain.connect(accounts[1]).updateMileage("AA000AA",2000)
+                milechain.connect(accounts[1]).updateMileage("AA000AA", 2000)
             ).revertedWith("You do not own this vehicle");
         });
 
         it("reverts if the mileage is lower than current mileage", async() =>{
             await milechain.addVehicle("AA000AA", 1000);
+
             await expect(
                 milechain.updateMileage("AA000AA", 100)
             ).revertedWith("New mileage must be greater than current mileage");
@@ -98,20 +111,10 @@ import { MileChain, MileChain__factory } from "../../typechain-types";
         it("reverts if contract is in safe mode",async () => {
             await milechain.addVehicle("AA000AA", 1000);
             await milechain.setSafeMode(true);
+
             await expect(
                 milechain.updateMileage("AA000AA", 10000)
             ).revertedWith("Contract is in read-only mode for security reasons");
-        });
-
-        it("updates the miles correctly", async() =>{
-            await milechain.addVehicle("AA000AA", 1000);
-            await milechain.updateMileage("AA000AA", 10000);
-            const vehicle:MileChain.VehicleStruct = await milechain.getVehicle("AA000AA");
-            const vehicleRecord:MileChain.MileageRecordStruct[] = await milechain.getMileageRecords("AA000AA");
-            
-            assert.equal(vehicle.mileage,10000);
-            assert.equal(vehicleRecord[0].mileage,1000);
-            assert.equal(vehicleRecord[1].mileage,10000);
         });
     });
 });
