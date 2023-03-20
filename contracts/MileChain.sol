@@ -138,7 +138,7 @@ contract MileChain is Owned {
      * @param licensePlate The licence plate of the vehicle
      * @return The mileage records of a vehicle
      */
-    function getMileageRecord(
+    function getMileageRecords(
         string memory licensePlate
     ) public view returns (MileageRecord[] memory) {
         require(
