@@ -59,7 +59,7 @@ contract MileChain is Owned {
         );
         require(
             !_safeMode,
-            "Contract is in read-only mode for security reasons."
+            "Contract is in read-only mode for security reasons"
         );
 
         _vehicles[licensePlate] = Vehicle(licensePlate, msg.sender, mileage);
@@ -87,7 +87,7 @@ contract MileChain is Owned {
         );
         require(
             !_safeMode,
-            "Contract is in read-only mode for security reasons."
+            "Contract is in read-only mode for security reasons"
         );
 
         _vehicles[licensePlate].mileage = mileage;
@@ -108,7 +108,7 @@ contract MileChain is Owned {
         );
         require(
             !_safeMode,
-            "Contract is in read-only mode for security reasons."
+            "Contract is in read-only mode for security reasons"
         );
 
         _vehicles[licensePlate].owner = newOwner;

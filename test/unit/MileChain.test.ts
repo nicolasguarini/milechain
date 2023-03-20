@@ -76,7 +76,7 @@ import { MileChain, MileChain__factory } from "../../typechain-types";
 
             await expect(
                 milechain.addVehicle("AA000AA", 1000)
-            ).revertedWith("Contract is in read-only mode for security reasons.");
+            ).revertedWith("Contract is in read-only mode for security reasons");
         });
     });
 
@@ -100,7 +100,7 @@ import { MileChain, MileChain__factory } from "../../typechain-types";
             await milechain.setSafeMode(true);
             await expect(
                 milechain.updateMileage("AA000AA", 10000)
-            ).revertedWith("Contract is in read-only mode for security reasons.");
+            ).revertedWith("Contract is in read-only mode for security reasons");
         });
 
         it("updates the miles correctly", async() =>{
