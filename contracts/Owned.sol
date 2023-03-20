@@ -17,10 +17,7 @@ contract Owned {
      * @dev Define modifier to grant access only to deployers
      */
     modifier onlyDeployers() {
-        require(
-            _deployers[msg.sender],
-            "You have to be a deployer to do this."
-        );
+        require(_deployers[msg.sender], "You have to be a deployer to do this");
 
         _;
     }
@@ -32,10 +29,8 @@ contract Owned {
     constructor(address[] memory deployers) {
         _deployers[msg.sender] = true;
 
-        if (deployers.length > 0) {
-            for (uint i = 0; i < deployers.length; i++) {
-                _deployers[deployers[i]] = true;
-            }
+        for (uint i = 0; i < deployers.length; i++) {
+            _deployers[deployers[i]] = true;
         }
 
         _safeMode = false;
@@ -55,8 +50,8 @@ contract Owned {
      */
     function addDeployer(address newDeployer) public onlyDeployers {
         require(
-            _deployers[newDeployer],
-            "The specified address is already a deployer."
+            !_deployers[newDeployer],
+            "The specified address is already a deployer"
         );
 
         _deployers[newDeployer] = true;
@@ -69,7 +64,7 @@ contract Owned {
     function deleteDeployer(address deployer) public onlyDeployers {
         require(
             _deployers[deployer],
-            "The specified address is not a deployer."
+            "The specified address is not a deployer"
         );
 
         _deployers[deployer] = false;
