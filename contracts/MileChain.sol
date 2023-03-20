@@ -107,6 +107,10 @@ contract MileChain is Owned {
             "Vehicle not found"
         );
         require(
+            _vehicles[licensePlate].owner == msg.sender,
+            "You do not own this vehicle"
+        );
+        require(
             !_safeMode,
             "Contract is in read-only mode for security reasons"
         );
