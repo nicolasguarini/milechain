@@ -9,6 +9,7 @@ const MAINNET_RPC_URL =
     process.env.ALCHEMY_MAINNET_RPC_URL ||
     "https://eth-mainnet.alchemyapi.io/v2/your-api-key";
 const GOERLI_RPC_URL = process.env.GOERLI_RPC_URL || "https://eth-goerli.alchemyapi.io/v2/your-api-key";
+const SEPOLIA_RPC_URL = process.env.SEPOLIA_RPC_URL || "https://eth-goerli.alchemyapi.io/v2/your-api-key";
 const PRIVATE_KEY = process.env.PRIVATE_KEY || "0x";
 const ETHERSCAN_API_KEY = process.env.ETHERSCAN_API_KEY || "Your etherscan API key";
 
@@ -27,6 +28,12 @@ const config: HardhatUserConfig = {
         accounts: PRIVATE_KEY !== undefined ? [PRIVATE_KEY] : [],
         saveDeployments: true,
         chainId: 5,
+    },
+    sepolia: {
+        url: SEPOLIA_RPC_URL,
+        accounts: PRIVATE_KEY !== undefined ? [PRIVATE_KEY] : [],
+        saveDeployments: true,
+        chainId: 11155111,
     },
     mainnet: {
         url: MAINNET_RPC_URL,
