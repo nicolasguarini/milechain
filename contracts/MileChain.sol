@@ -41,6 +41,8 @@ contract MileChain is Owned {
     mapping(string => MileageRecord[]) private mileageRecords;
     mapping(string => OwnersRecord[]) private ownersRecords;
 
+    constructor(address[] memory _deployers) Owned(_deployers) public {}
+
     /**
      * Function to add a new vehicle
      * @param licensePlate The licence plate of the vehicle

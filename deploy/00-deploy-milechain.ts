@@ -14,7 +14,7 @@ const deployContract: DeployFunction = async function (hre: HardhatRuntimeEnviro
 
     const contract = await deploy("MileChain", {
         from: deployer,
-        args: [],
+        args: [[]],
         log: true,
         waitConfirmations: waitBlockConfirmations,
     });

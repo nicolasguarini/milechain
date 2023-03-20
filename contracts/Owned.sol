@@ -1,3 +1,4 @@
+
 // SPDX-License-Identifier: GNU
 
 pragma solidity ^0.8.18;
@@ -11,46 +12,39 @@ contract Owned {
     /**
      * @dev Define variables to keep track of deployers and safe mode
      */
-    address internal deployer; // TODO: implement managing a group of deployers
+    mapping(address => bool) internal isDeployer;
     bool internal safeMode;
 
-    /**
-     * @dev Define modifier for giving permission only to the deployers of the contract
-     */
-    modifier onlyDeployer() {
-        require(msg.sender == deployer);
+    modifier onlyDeployers(){
+        require(isDeployer[msg.sender]);
         _;
     }
 
     /**
      * @dev Initialize the contract's variables
      */
-    constructor() {
-        deployer = msg.sender;
+    constructor(address[] memory _deployers) public {
+        isDeployer[msg.sender]=true;
+        for(uint i=0; i<_deployers.length; i++){
+            isDeployer[_deployers[i]]=true;
+        }
         safeMode = false;
-    }
-
-    /**
-     * Function to transfer contract ownership to another address
-     * @param newDeployer The new deployer of the contract
-     */
-    function transferDeployer(address newDeployer) public onlyDeployer {
-        deployer = newDeployer;
     }
 
     /**
      * Function to change the state of the safe mode
      * @param newState The new state of the safe mode
      */
-    function setSafeMode(bool newState) public onlyDeployer {
+    function setSafeMode(bool newState) public onlyDeployers {
         safeMode = newState;
     }
 
-    /**
-     * Function to get the deployer of the contract
-     * @return The address of the deployer of the contract
-     */
-    function getDeployer() public view onlyDeployer returns (address) {
-        return deployer;
+    function addDeployer(address _newDeployer) public onlyDeployers{
+        isDeployer[_newDeployer]=true;
     }
+
+     function deleteDeployer(address _deployer) public onlyDeployers{
+        isDeployer[_deployer]=false;
+    }
+
 }
