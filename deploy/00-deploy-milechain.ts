@@ -26,3 +26,4 @@ const deployContract: DeployFunction = async function (hre: HardhatRuntimeEnviro
 }
 
 export default deployContract;
+deployContract.tags = ["all", "milechain"];
