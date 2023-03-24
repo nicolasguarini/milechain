@@ -3,6 +3,8 @@ import "@nomicfoundation/hardhat-toolbox";
 import "hardhat-deploy";
 import "dotenv/config";
 import "hardhat-gas-reporter";
+import "./tasks/addVehicle";
+import "./tasks/getVehicle";
 
 const MAINNET_RPC_URL =
     process.env.MAINNET_RPC_URL ||
