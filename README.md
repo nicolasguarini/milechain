@@ -37,7 +37,7 @@ npx hardhat test
 
 ### Test gas costs
 
-To get a report of gas costs, set env `REPORT_GAS` to true. A file named `gas-report.txt` will be generated.
+To get a report of gas costs, set env `REPORT_GAS` to true. A file named `gas-report.txt` will be generated when running new tests.
 
 To get a USD estimation of gas cost, you'll need a `COINMARKETCAP_API_KEY` environment variable. You can get one for free from CoinMarketCap.
 
@@ -45,6 +45,21 @@ To get a USD estimation of gas cost, you'll need a `COINMARKETCAP_API_KEY` envir
 
 ```
 npx hardhat deploy --network goerli | mainnet | localhost
+```
+
+### Interact with the contract
+After you created a local node (with `npx hardhat node`) and deployed the contract to it (with `npx hardhat deploy --network localhost`), you can interact with it using the existent tasks:
+
+- `addVehicle [licensePlate] [mileage]`
+- `getVehicle [licensePlate]`
+
+The syntax for executing tasks is the following:
+```
+npx hardhat [taskName] [options] --network localhost
+```
+For example, the commading for getting the vehicle with licence plate "AA000AA" is:
+```
+npx hardhat getVehicle AA000AA --network localhost
 ```
 
 ### Validate a contract with etherscan (requires API key)
