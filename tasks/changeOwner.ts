@@ -3,7 +3,7 @@ import { MileChain } from "../typechain-types";
 import { address } from "../deployments/localhost/MileChain.json";
 import { Address } from "hardhat-deploy/dist/types";
 
-task("changeOwner.ts", "A task to change the vehicle's owner")
+task("changeOwner", "A task to change the vehicle's owner")
     .addPositionalParam("licensePlate")
     .addPositionalParam("address")
     .setAction(async (taskArgs) => {
@@ -11,8 +11,8 @@ task("changeOwner.ts", "A task to change the vehicle's owner")
         const milechain: MileChain = await hre.ethers.getContractAt("MileChain", address);
 
         const licensePlate: string = taskArgs.licensePlate;
-        const mileage: Address = taskArgs.address;
+        const newAddress: Address = taskArgs.address;
 
-        await milechain.updateMileage(licensePlate, mileage);
+        await milechain.changeOwner(licensePlate, newAddress);
         console.log("Owner changed!");
     });

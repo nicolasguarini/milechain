@@ -5,6 +5,15 @@ import "dotenv/config";
 import "hardhat-gas-reporter";
 import "./tasks/addVehicle";
 import "./tasks/getVehicle";
+import "./tasks/addDeployer";
+import "./tasks/changeOwner";
+import "./tasks/deleteDeployer";
+import "./tasks/getCurrentSafeModeState";
+import "./tasks/getMileageRecords";
+import "./tasks/getOwnersRecords";
+import "./tasks/isDeployer";
+import "./tasks/setSafeMode";
+import "./tasks/updateMileage";
 
 const MAINNET_RPC_URL =
     process.env.MAINNET_RPC_URL ||

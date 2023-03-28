@@ -9,5 +9,5 @@ task("getCurrentSafeModeState", "A task to know the safeMode's value")
         const milechain: MileChain = await hre.ethers.getContractAt("MileChain", address);
 
         const result: boolean = await milechain.getCurrentSafeModeState();
-        console.log("result");
+        console.log(result);
     });

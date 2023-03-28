@@ -12,5 +12,5 @@ task("isDeployer", "A task to know if an address is a deployer")
         const deployer: Address = taskArgs.address;
 
         const result: boolean = await milechain.isDeployer(deployer);
-        console.log("result");
+        console.log(result);
     });
