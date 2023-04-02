@@ -5,6 +5,7 @@
     "hardhat-deploy": "^0.11.24"
   },
   "dependencies": {
-    "dotenv": "^16.0.3"
+    "dotenv": "^16.0.3",
+    "mongodb": "^5.1.0"
   }
 }
