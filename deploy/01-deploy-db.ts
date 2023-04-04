@@ -2,6 +2,7 @@ import { DeployFunction } from "hardhat-deploy/dist/types";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 import { developmentChains } from "../hardhat.config";
 import * as mongoDB from "mongodb";
+import MongoDatabase from "../utils/db";
 
 const deployDb: DeployFunction = async function (hre: HardhatRuntimeEnvironment){
     const { network } = hre;
@@ -9,31 +10,26 @@ const deployDb: DeployFunction = async function (hre: HardhatRuntimeEnvironment)
     const DB_NAME: string|undefined = process.env.DB_NAME;
 
     if(!developmentChains.includes(network.name) && DB_CONN_STRING && DB_NAME){
-        const DB_FULL_NAME = DB_NAME + "-" + network.name;
+        const DB_NAME = "milechain-" + network.name;
+        const dbList: mongoDB.ListDatabasesResult = await MongoDatabase
+            .getInstance()
+            .getClient()
+            .db()
+            .admin()
+            .listDatabases();
 
-        console.log("Connecting to MongoDB Atlas...");
-        const client: mongoDB.MongoClient = new mongoDB.MongoClient(DB_CONN_STRING);
-        await client.connect();
-        console.log("Connected!");
-        
-        const dbList: mongoDB.ListDatabasesResult = await client.db().admin().listDatabases();
-        const database = client.db(DB_FULL_NAME);
+        const database = MongoDatabase.getInstance().getClient().db(DB_NAME);
 
-        if(dbList.databases.find((db) => db.name == DB_FULL_NAME) === undefined){
-            console.log("Creating " + DB_FULL_NAME + " database...");
-        }else{
-            console.log(DB_FULL_NAME + " already exists, dropping and recreating it."); //we could duplicate the existing db and dropping the duplicate
+        if(dbList.databases.find((db) => db.name == DB_NAME) !== undefined){
+            console.log(DB_NAME + " already exists, dropping and recreating it."); //we could duplicate the existing db and dropping the duplicate
             await database.dropDatabase();
         }
 
         try{
             await database.createCollection("vehicles");
             await database.createCollection("owners");
-            console.log(DB_FULL_NAME + " created!");
-        }finally{
-            client.close();
-            console.log("Client closed.")
-        }
+            console.log(DB_NAME + " created!");
+        }catch(e){console.error(e);}
     }
 }
 
