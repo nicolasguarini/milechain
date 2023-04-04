@@ -28,7 +28,7 @@ task("getMileageRecords", "A task to get the vehicle's records")
                 const vehicle = await database.collection("vehicles").findOne({licensePlate: taskArgs.licensePlate});
                 
                 if(vehicle){
-                    const milechain: MileChain = await hre.ethers.getContractAt("MileChain", address, signers[0]);
+                    const milechain: MileChain = await hre.ethers.getContractAt("MileChain", contractAddress, signers[0]);
                     const mileageRecord: MileChain.MileageRecordStruct[] = await milechain.getMileageRecords(taskArgs.licensePlate);
                     console.log(mileageRecord);
                 }
