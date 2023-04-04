@@ -42,7 +42,6 @@ task("addVehicle", "A task to add a new vehicle")
             }catch(e){
                 console.error(e);
             }
-            
             try{
                 const myContract: MileChain = await hre.ethers.getContractAt("MileChain", contractAddress, signers[0]);
                 await myContract.addVehicle(licensePlate, mileage);
