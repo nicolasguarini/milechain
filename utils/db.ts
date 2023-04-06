@@ -5,7 +5,7 @@ class MongoDatabase {
   private client: MongoClient;
 
   private constructor() {
-    const url = process.env.DB_CONN_STRING!;
+    const url: string = process.env.DB_CONN_STRING!;
     this.client = new MongoClient(url);
     this.client.connect().catch((error) => {
       console.error('Error connecting to MongoDB:', error);

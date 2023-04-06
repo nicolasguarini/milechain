@@ -2,6 +2,8 @@ import { task } from "hardhat/config";
 import { MileChain } from "../typechain-types";
 import { developmentChains } from "../hardhat.config";
 import MongoDatabase from "../utils/db";
+import { HardhatRuntimeEnvironment } from "hardhat/types";
+import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 
 task("updateMileage", "A task to update a vehicle")
     .addPositionalParam("licensePlate")
@@ -9,10 +11,10 @@ task("updateMileage", "A task to update a vehicle")
     .setAction(async (taskArgs) => {
         const licensePlate: string = taskArgs.licensePlate;
         const mileage: number = parseInt(taskArgs.mileage);
-        const hre = require("hardhat");
-        const networkName = hre.network.name;
-        const signers = hre.ethers.getSigners();
-        const address = require(`../deployments/${networkName}/MileChain.json`).address;
+        const hre: HardhatRuntimeEnvironment = require("hardhat");
+        const networkName: string = hre.network.name;
+        const signers: SignerWithAddress[] = await hre.ethers.getSigners();
+        const address: string = require(`../deployments/${networkName}/MileChain.json`).address;
         const milechain: MileChain = await hre.ethers.getContractAt("MileChain", address, signers[0]);
 
         if(developmentChains.includes(networkName)){
@@ -31,7 +33,7 @@ task("updateMileage", "A task to update a vehicle")
                 });
                 
                 if(vehicle){
-                    const oldMileage = vehicle.mileage;
+                    const oldMileage: number = vehicle.mileage;
                     await database.collection("vehicles").updateOne({
                         licensePlate: licensePlate
                     }, {

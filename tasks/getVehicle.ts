@@ -32,6 +32,8 @@ task("getVehicle", "A task to get a vehicle")
                     console.log(resVehicle);
                 }else{
                     console.log("Vehicle not found in database");
+
+                    // TODO: check if the vehicle is present in the blockchain, if so, update the db
                 }
             }catch(e){
                 console.error(e);

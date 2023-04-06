@@ -3,15 +3,18 @@ import { MileChain } from "../typechain-types";
 import { Address } from "hardhat-deploy/dist/types";
 import { developmentChains } from "../hardhat.config";
 import MongoDatabase from "../utils/db";
+import { HardhatRuntimeEnvironment } from "hardhat/types";
+import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
+import { Db } from "mongodb";
 
 task("changeOwner", "A task to change the vehicle's owner")
     .addPositionalParam("licensePlate")
     .addPositionalParam("address")
     .setAction(async (taskArgs) => {
-        const hre = require("hardhat");
-        const signers = await hre.ethers.getSigners();
-        const networkName = hre.network.name;
-        const address = require(`../deployments/${networkName}/MileChain.json`).address;
+        const hre: HardhatRuntimeEnvironment = require("hardhat");
+        const signers: SignerWithAddress[] = await hre.ethers.getSigners();
+        const networkName: string = hre.network.name;
+        const address: string = require(`../deployments/${networkName}/MileChain.json`).address;
         const licensePlate: string = taskArgs.licensePlate;
         const newAddress: Address = taskArgs.address;
         const milechain: MileChain = await hre.ethers.getContractAt("MileChain", address, signers[0]);
@@ -21,8 +24,8 @@ task("changeOwner", "A task to change the vehicle's owner")
             console.log("Owner changed!");
         }
         else{
-            const DB_NAME = "milechain-" + networkName;
-            const database = MongoDatabase
+            const DB_NAME: string = "milechain-" + networkName;
+            const database: Db = MongoDatabase
                 .getInstance()
                 .getClient()
                 .db(DB_NAME);
