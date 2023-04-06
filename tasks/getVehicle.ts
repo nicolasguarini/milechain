@@ -11,6 +11,7 @@ task("getVehicle", "A task to get a vehicle")
         const networkName = hre.network.name;
         const address = require(`../deployments/${networkName}/MileChain.json`).address;
         const milechain: MileChain = await hre.ethers.getContractAt("MileChain", address);
+        
 
         if(developmentChains.includes(networkName)){
             const vehicle: MileChain.VehicleStruct = await milechain.getVehicle(taskArgs.licensePlate);
@@ -32,8 +33,24 @@ task("getVehicle", "A task to get a vehicle")
                     console.log(resVehicle);
                 }else{
                     console.log("Vehicle not found in database");
+                    try {
+                        console.log("Trying to get vehicle from blockchain");
+                        const resVehicle: MileChain.VehicleStruct = await milechain.getVehicle(licensePlate);  
+                        console.log("Vehicle found in blockchain, adding to database");
+                        await database.collection("vehicles").insertOne({
+                            licensePlate: resVehicle.licensePlate,
+                            mileage: resVehicle.mileage,
+                            owner: resVehicle.owner,
+                        });
 
-                    // TODO: check if the vehicle is present in the blockchain, if so, update the db
+                        await database.collection("owners").insertOne({
+                            address: resVehicle.owner,
+                        });
+                        
+                        console.log("Database updated");
+                    } catch (e) {
+                        console.error("Vehicle not found in blockchain");
+                    }
                 }
             }catch(e){
                 console.error(e);
