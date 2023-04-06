@@ -14,10 +14,14 @@ npm install
 
 ### Setup environment variabltes
 
-You'll want to set your `GOERLI_RPC_URL` and `PRIVATE_KEY` as environment variables. You can add them to a `.env` file, similar to what you see in `.env.example`.
+You'll have to set some environment variables. You can add them to a `.env` file, similar to what you see in `.env.example`.
 
 - `PRIVATE_KEY`: The private key of your account (like from metamask). NOTE: FOR DEVELOPMENT, PLEASE USE A KEY THAT DOESN'T HAVE ANY REAL FUNDS ASSOCIATED WITH IT.
-- `GOERLI_RPC_URL`: This is url of the node you're working with. You can get setup with one for free from Alchemy
+- `SEPOLIA_RPC_URL`: This is url of the node you're working with. You can get setup with one for free from Alchemy
+- `ETHERSCAN_API_KEY`: You'll need this if you want to automatically verify deployed contracts
+- `COINMARKETCAP_API_KEY`: You'll need this if you want to have USD convertions of gas used to call the contract functions
+- `REPORT_GAS`: You have to set this to `true` if you want detailed gas usage reports of the contracts
+- `DB_CONN_STRING`: The MongoDB connection string. You'll need this if you want to deploy the contract on a live network.
 
 ### Compile
 
@@ -29,10 +33,16 @@ npx hardhat compile
 
 ### Test
 
-Run the tests:
+Run the unit tests:
 
 ```sh
 npx hardhat test
+```
+
+Run the staging tests:
+
+```sh
+npx hardhat test --network sepolia
 ```
 
 ### Test gas costs
@@ -44,20 +54,24 @@ To get a USD estimation of gas cost, you'll need a `COINMARKETCAP_API_KEY` envir
 ### Deploy contract to network
 
 ```
-npx hardhat deploy --network goerli | mainnet | localhost
+npx hardhat deploy --network sepolia | mainnet | localhost
 ```
 
 ### Interact with the contract
+
 After you created a local node (with `npx hardhat node`) and deployed the contract to it (with `npx hardhat deploy --network localhost`), you can interact with it using the existent tasks:
 
 - `addVehicle [licensePlate] [mileage]`
 - `getVehicle [licensePlate]`
 
 The syntax for executing tasks is the following:
+
 ```
 npx hardhat [taskName] [options] --network localhost
 ```
+
 For example, the commading for getting the vehicle with licence plate "AA000AA" is:
+
 ```
 npx hardhat getVehicle AA000AA --network localhost
 ```
@@ -66,7 +80,7 @@ npx hardhat getVehicle AA000AA --network localhost
 
 If you deploy to a testnet or mainnet, you can verify it if you get an API Key from Etherscan and set it as an environemnt variable named `ETHERSCAN_API_KEY`. You can pop it into your .env file as seen in the .env.example.
 
-In it's current state, if you have your api key set, it will auto verify goerli contracts!
+In it's current state, if you have your api key set, it will auto verify your contracts!
 
 However, you can manual verify with:
 
