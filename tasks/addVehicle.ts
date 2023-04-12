@@ -4,7 +4,7 @@ import { developmentChains } from "../hardhat.config";
 import MongoDatabase from "../utils/db";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
-import { Db } from "mongodb";
+import { Db, WithId } from "mongodb";
 import { performance } from "perf_hooks";
 
 task("addVehicle", "A task to add a new vehicle")
@@ -37,9 +37,15 @@ task("addVehicle", "A task to add a new vehicle")
                     owner: signers[0].address
                 });
 
-                await database.collection("owners").insertOne({
-                    address: signers[0].address
+                const owner = await database.collection("owners").findOne({ 
+                    "address": signers[0].address 
                 });
+
+                if(!owner){
+                    await database.collection("owners").insertOne({
+                        address: signers[0].address
+                    });
+                }
                 
                 console.log("Database updated");
 

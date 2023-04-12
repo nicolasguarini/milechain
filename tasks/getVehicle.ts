@@ -36,17 +36,26 @@ task("getVehicle", "A task to get a vehicle")
                     console.log("Vehicle not found in database");
                     try {
                         console.log("Trying to get vehicle from blockchain");
-                        const resVehicle: MileChain.VehicleStruct = await milechain.getVehicle(licensePlate);  
+                        const resVehicle: MileChain.VehicleStruct = await milechain.getVehicle(licensePlate);
+                        
                         console.log("Vehicle found in blockchain, adding to database");
                         await database.collection("vehicles").insertOne({
                             licensePlate: resVehicle.licensePlate,
-                            mileage: resVehicle.mileage,
+                            mileage: parseFloat(resVehicle.mileage.toString()),
                             owner: resVehicle.owner,
                         });
 
-                        await database.collection("owners").insertOne({
-                            address: resVehicle.owner,
+                        console.log(resVehicle.owner.toString());
+
+                        const owner = await database.collection("owners").findOne({ 
+                            "address": resVehicle.owner.toString() 
                         });
+
+                        if(!owner){
+                            await database.collection("owners").insertOne({
+                                address: resVehicle.owner.toString(),
+                            });
+                        }
                         
                         console.log("Database updated");
                     } catch (e) {
