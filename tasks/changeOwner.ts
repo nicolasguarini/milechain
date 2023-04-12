@@ -6,11 +6,13 @@ import MongoDatabase from "../utils/db";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { Db } from "mongodb";
+import { performance } from "perf_hooks";
 
 task("changeOwner", "A task to change the vehicle's owner")
     .addPositionalParam("licensePlate")
     .addPositionalParam("address")
     .setAction(async (taskArgs) => {
+        const startTime: number = performance.now();
         const hre: HardhatRuntimeEnvironment = require("hardhat");
         const signers: SignerWithAddress[] = await hre.ethers.getSigners();
         const networkName: string = hre.network.name;
@@ -71,4 +73,7 @@ task("changeOwner", "A task to change the vehicle's owner")
                 console.error(e);
             }
         }
+
+        const endTime: number = performance.now();
+        console.log(`Task completed in ${Math.round(endTime - startTime)}ms.`);
     });

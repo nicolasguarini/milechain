@@ -2,16 +2,17 @@ import { task } from "hardhat/config";
 import { MileChain } from "../typechain-types";
 import { developmentChains } from "../hardhat.config";
 import MongoDatabase from "../utils/db";
+import { performance } from "perf_hooks";
 
 task("getVehicle", "A task to get a vehicle")
     .addPositionalParam("licensePlate")
     .setAction(async (taskArgs) => {
+        const startTime: number = performance.now();
         const licensePlate: string = taskArgs.licensePlate;
         const hre = require("hardhat");
         const networkName = hre.network.name;
         const address = require(`../deployments/${networkName}/MileChain.json`).address;
         const milechain: MileChain = await hre.ethers.getContractAt("MileChain", address);
-        
 
         if(developmentChains.includes(networkName)){
             const vehicle: MileChain.VehicleStruct = await milechain.getVehicle(taskArgs.licensePlate);
@@ -56,4 +57,7 @@ task("getVehicle", "A task to get a vehicle")
                 console.error(e);
             }
         }
+
+        const endTime: number = performance.now();
+        console.log(`Task completed in ${Math.round(endTime - startTime)}ms.`);
     });

@@ -4,11 +4,13 @@ import { developmentChains } from "../hardhat.config";
 import MongoDatabase from "../utils/db";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
+import { performance } from "perf_hooks";
 
 task("updateMileage", "A task to update a vehicle")
     .addPositionalParam("licensePlate")
     .addPositionalParam("mileage")
     .setAction(async (taskArgs) => {
+        const startTime: number = performance.now();
         const licensePlate: string = taskArgs.licensePlate;
         const mileage: number = parseInt(taskArgs.mileage);
         const hre: HardhatRuntimeEnvironment = require("hardhat");
@@ -69,4 +71,7 @@ task("updateMileage", "A task to update a vehicle")
                 console.error(e);
             }
         }
+
+        const endTime: number = performance.now();
+        console.log(`Task completed in ${Math.round(endTime - startTime)}ms.`);
     });

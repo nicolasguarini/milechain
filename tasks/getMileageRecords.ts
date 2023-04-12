@@ -4,10 +4,12 @@ import MongoDatabase from "../utils/db";
 import { developmentChains } from "../hardhat.config";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 import { Db } from "mongodb";
+import { performance } from "perf_hooks";
 
 task("getMileageRecords", "A task to get the vehicle's records")
     .addPositionalParam("licensePlate")
     .setAction(async (taskArgs) => {
+        const startTime: number = performance.now();
         const licensePlate: string = taskArgs.licensePlate;
         const hre: HardhatRuntimeEnvironment = require("hardhat");
         const networkName: string = hre.network.name;
@@ -40,4 +42,7 @@ task("getMileageRecords", "A task to get the vehicle's records")
                 console.error(e);
             }
         }
+
+        const endTime: number = performance.now();
+        console.log(`Task completed in ${Math.round(endTime - startTime)}ms.`);
     });

@@ -5,11 +5,13 @@ import MongoDatabase from "../utils/db";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 import { Db } from "mongodb";
+import { performance } from "perf_hooks";
 
 task("addVehicle", "A task to add a new vehicle")
     .addPositionalParam("licensePlate")
     .addPositionalParam("mileage")
     .setAction(async (taskArgs) => {
+        const startTime: number = performance.now();
         const hre: HardhatRuntimeEnvironment = require("hardhat");
         const networkName: string = hre.network.name;
         const licensePlate: string = taskArgs.licensePlate;
@@ -56,6 +58,9 @@ task("addVehicle", "A task to add a new vehicle")
             }catch(e){
                 console.log("Failed to update database");
                 console.error(e);
-            }
+            }     
         }
+
+        const endTime: number = performance.now();
+        console.log(`Task completed in ${endTime - startTime}ms.`);
     });

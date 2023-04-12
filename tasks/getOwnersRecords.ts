@@ -4,10 +4,12 @@ import { developmentChains } from "../hardhat.config";
 import MongoDatabase from "../utils/db";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 import { Db } from "mongodb";
+import { performance } from "perf_hooks";
 
 task("getOwnersRecords", "A task to get the owners'records")
     .addPositionalParam("licensePlate")
     .setAction(async (taskArgs) => {
+        const startTime: number = performance.now();
         const hre: HardhatRuntimeEnvironment = require("hardhat");
         const licensePlate: string = taskArgs.licensePlate;
         const networkName: string = hre.network.name;
@@ -39,4 +41,7 @@ task("getOwnersRecords", "A task to get the owners'records")
                 console.error(e);
             }
         }
+
+        const endTime: number = performance.now();
+        console.log(`Task completed in ${Math.round(endTime - startTime)}ms.`);
     });
