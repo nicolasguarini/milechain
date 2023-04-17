@@ -6,7 +6,7 @@ export default function VehiclesCount() {
 
     useEffect(() => {
         setLoading(true)
-        fetch("https://milechain.netlify.app/.netlify/functions/getOwnersCount?network=sepolia", {method: "GET"})
+        fetch("https://milechain.netlify.app/.netlify/functions/getVehiclesCount?network=sepolia", {method: "GET"})
         .then((res) => res.json())
         .then((data) => {
           setData(data.count)
