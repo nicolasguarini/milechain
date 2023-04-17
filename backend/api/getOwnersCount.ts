@@ -6,26 +6,35 @@ const mongoClient: MongoClient = new MongoClient(process.env.DB_CONN_STRING!);
 const clientPromise = mongoClient.connect();
 
 const handler: Handler = async (event: HandlerEvent, context: HandlerContext) => {
-    const network: string = event.queryStringParameters!.network!;
+    if(event.httpMethod == "GET"){
+        const network: string = event.queryStringParameters!.network!;
 
-    try{
-        if(network == "sepolia" || network == "mainnet"){
-            const database: Db = (await clientPromise).db(`milechain-${network}`);
-            const collection: Collection = database.collection("owners");
-            const count: number = await collection.countDocuments();
+        try{
+            if(network == "sepolia" || network == "mainnet"){
+                const database: Db = (await clientPromise).db(`milechain-${network}`);
+                const count: number = await database.collection("owners").countDocuments();
 
+                return {
+                    statusCode: 200,
+                    body: JSON.stringify({ count: count })
+                };
+            }else{
+                return {
+                    statusCode: 400,
+                    body: JSON.stringify({ message: "Invalid network"})
+                };
+            }
+        }catch(e){
             return {
-                statusCode: 200,
-                body: JSON.stringify({ count: count })
+                statusCode: 500,
+                body: JSON.stringify({ message: "DB Error" })
             };
-        }else{
-            throw Error("Invalid network");
         }
-    }catch(e){
+    }else{
         return {
-            statusCode: 500,
-            body: JSON.stringify({ message: "Error" })
-        };
+            statusCode: 405,
+            body: JSON.stringify({ message: "Method not allowed"})
+        }
     }
 };
 
