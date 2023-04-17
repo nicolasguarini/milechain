@@ -1,11 +1,18 @@
-import { Inter } from 'next/font/google'
-
-const inter = Inter({ subsets: ['latin'] })
+import Layout from '@/components/layout'
 
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <h1 className={`${inter.className} text-3xl`}>MileChain frontend application</h1>
-    </main>
+    <Layout>
+      <main className="flex min-h-screen flex-col items-center justify-center container m-auto">
+        <h1 className={`text-4xl font-bold text-center max-w-5xl mb-3`}>DApp for registering vehicles mileages and ownership history on Ethereum blockchain.</h1>
+        <p className='text-primary-darker opacity-50 mb-10'>Built with Solidity, Alchemy, IPFS and other hot technologies :)</p>
+
+        <input type="text" className='bg-darker border-2 rounded-full border-primary-darker border-opacity-50 w-full max-w-md px-5 py-3 mb-3 font-bold placeholder-primary-darker placeholder-opacity-50' placeholder='Start browsing license plates...'/>
+        <div className='flex flex-row w-full max-w-md justify-between text-primary-darker opacity-50 text-sm'>
+          <p>134543 currently registered vehicles</p>
+          <p>134300 owners</p>
+        </div>
+      </main>
+    </Layout>                 
   )
 }
