@@ -1,4 +1,6 @@
 import Layout from '@/components/layout'
+import OwnersCount from '@/components/ownersCount'
+import VehiclesCount from '@/components/vehiclesCount'
 
 export default function Home() {
   return (
@@ -9,8 +11,8 @@ export default function Home() {
 
         <input type="text" className='bg-darker border-2 rounded-full border-primary-darker border-opacity-50 w-full max-w-md px-5 py-3 mb-3 font-bold placeholder-primary-darker placeholder-opacity-50' placeholder='Start browsing license plates...'/>
         <div className='flex flex-row w-full max-w-md justify-between text-primary-darker opacity-50 text-sm'>
-          <p>134543 currently registered vehicles</p>
-          <p>134300 owners</p>
+          <VehiclesCount />
+          <OwnersCount />
         </div>
       </main>
     </Layout>                 
