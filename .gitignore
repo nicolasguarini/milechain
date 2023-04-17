@@ -7,3 +7,6 @@ typechain-types
 cache
 artifacts
 deployments/localhost
+
+# Local Netlify folder
+.netlify
