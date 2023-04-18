@@ -1,11 +1,12 @@
+import Link from "next/link"
 import logo from "../public/milechain.svg"
 
 export default function Navbar(){
     return <nav className="bg-darker fixed w-full z-20 top-0 left-0 font-medium">
         <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
-            <a href="/" className="flex items-center">
+            <Link href="/" className="flex items-center">
                 <img src="/milechain.png" className="h-8 mr-3" alt="MileChain Logo" />
-            </a>
+            </Link>
         
             <div className="flex md:order-2">
                 <button type="button" className="border border-accent px-8 py-2 rounded-full font-bold">Connect Wallet</button>
