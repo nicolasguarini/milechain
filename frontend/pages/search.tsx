@@ -11,27 +11,23 @@ export default function Search(){
     useEffect(()=>{
         setLoading(true)
         if(!router.isReady) return;
-        const url = router.query.type == "Vehicle" 
+        const url = router.query.type == "Vehicles" 
             ? `https://milechain.netlify.app/.netlify/functions/searchVehicles?network=sepolia&query=${router.query.content}`
             : `https://milechain.netlify.app/.netlify/functions/searchOwners?network=sepolia&query=${router.query.content}`
 
         fetch(url, {method: "GET"})
             .then((res) => res.json())
             .then((data) => {
-                if(router.query.type=="vehicle"){
+                if(router.query.type=="Vehicles"){
                     setData(data.vehicles)
                 }else{
                     setData(data.owners)
                 }
-
-                setLoading(false)
             });
-
+        setLoading(false);
     }, [router.isReady]);
 
-
     return  (
-
         <Layout>
             <Container>
                 <div className="w-full mb-10">
@@ -40,26 +36,28 @@ export default function Search(){
 
                 {isLoading ? <div>Loading...</div> : (
                     <div className="">
-                        { router.query.type=="vehicle" ? ( 
-                        data.map((vehicle: any) => {
-                            return (
-                                <div className=" border-b-2 border-primary border-opacity-50 pb-6">
-                                    <div className="text-xl font-bold py-4">{vehicle.licensePlate}</div>
-                                    <div>Current mileage: {vehicle.mileage}</div>
-                                    <div>Owner: {vehicle.owner}</div>
-                                </div>
+                        { 
+                            router.query.type=="Vehicles" ? ( 
+                                data.map((vehicle: any) => {
+                                    return (
+                                        <div className=" border-b-2 border-primary border-opacity-50 pb-6" key={vehicle.licensePlate}>
+                                            <div className="text-xl font-bold py-4">{vehicle.licensePlate}</div>
+                                            <div>Current mileage: {vehicle.mileage}</div>
+                                            <div>Owner: {vehicle.owner}</div>
+                                        </div>
+                                    )
+                                })
+                            ) : (  
+                                data.map((owner: any) => {
+                                return (
+                                    <div className=" border-b-2 border-primary border-opacity-50 pb-6" key={owner.address}>
+                                        <div className="text-xl font-bold py-4">{owner.address}</div>
+                                        <div>Name: {owner.name}</div>
+                                        <div>Surname: {owner.surname}</div>
+                                    </div>
+                                )}) 
                             )
-                        })
-                        ) : (  data.map((owner: any) => {
-                            return (
-                                <div className=" border-b-2 border-primary border-opacity-50 pb-6">
-                                    <div className="text-xl font-bold py-4">{owner.address}</div>
-                                    <div>Name: {owner.name}</div>
-                                    <div>Surname: {owner.surname}</div>
-                                </div>
-                            )
-                        }) )}
-                    
+                        }
                     </div>
                 )}
             </Container>
