@@ -3,7 +3,7 @@ import logo from "../public/milechain.svg"
 export default function Navbar(){
     return <nav className="bg-darker fixed w-full z-20 top-0 left-0 font-medium">
         <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
-            <a href="https://flowbite.com/" className="flex items-center">
+            <a href="/" className="flex items-center">
                 <img src="/milechain.png" className="h-8 mr-3" alt="MileChain Logo" />
             </a>
         

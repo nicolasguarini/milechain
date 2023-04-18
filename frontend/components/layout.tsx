@@ -7,10 +7,10 @@ type LayoutProps = {
 
 export default function Layout({ children }: LayoutProps) {
     return (
-      <>
+      <div className="h-screen min-h-screen flex flex-col justify-between">
         <Navbar />
             <main>{children}</main>
         <Footer />
-      </>
+      </div>
     )
   }
