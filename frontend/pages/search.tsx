@@ -1,12 +1,13 @@
 import Container from "@/components/container";
 import Layout from "@/components/layout";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
 export default function Search(){
     const router = useRouter();
     const [data, setData]: any[] = useState([])
-    const [isLoading, setLoading] = useState(false)
+    const [isLoading, setLoading] = useState(true)
 
     useEffect(()=>{
         setLoading(true)
@@ -41,9 +42,13 @@ export default function Search(){
                                 data.map((vehicle: any) => {
                                     return (
                                         <div className=" border-b-2 border-primary border-opacity-50 pb-6" key={vehicle.licensePlate}>
-                                            <div className="text-xl font-bold py-4">{vehicle.licensePlate}</div>
-                                            <div>Current mileage: {vehicle.mileage}</div>
-                                            <div>Owner: {vehicle.owner}</div>
+                                            <Link href={`/vehicles/${vehicle.licensePlate}`}>
+                                                <div className="text-xl font-bold py-4">{vehicle.licensePlate}</div>
+                                                <div>Current mileage: {vehicle.mileage}</div>
+                                            </Link>
+                                            <Link href={`/owners/${vehicle.owner}`}>
+                                                <div>Owner: {vehicle.owner}</div>
+                                            </Link>
                                         </div>
                                     )
                                 })
@@ -51,9 +56,12 @@ export default function Search(){
                                 data.map((owner: any) => {
                                 return (
                                     <div className=" border-b-2 border-primary border-opacity-50 pb-6" key={owner.address}>
-                                        <div className="text-xl font-bold py-4">{owner.address}</div>
-                                        <div>Name: {owner.name}</div>
-                                        <div>Surname: {owner.surname}</div>
+                                        <Link href={`/owners/${owner.address}`}>
+                                            <div className="text-xl font-bold py-4">{owner.address}</div>
+                                            <div>Name: {owner.name}</div>
+                                            <div>Surname: {owner.surname}</div>
+                                        </Link>
+                                        
                                     </div>
                                 )}) 
                             )
