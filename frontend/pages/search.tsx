@@ -11,20 +11,19 @@ export default function Search(){
     useEffect(()=>{
         setLoading(true)
         if(!router.isReady) return;
-        var url="";
-        if(router.query.type=="vehicle"){
-         url = `http://localhost:8888/.netlify/functions/searchVehicles?network=sepolia&query=${router.query.content}`
-        }else{
-         url = `http://localhost:8888/.netlify/functions/searchOwners?network=sepolia&query=${router.query.content}`
-        }
+        const url = router.query.type == "Vehicle" 
+            ? `http://localhost:8888/.netlify/functions/searchVehicles?network=sepolia&query=${router.query.content}`
+            : `http://localhost:8888/.netlify/functions/searchOwners?network=sepolia&query=${router.query.content}`
+
         fetch(url, {method: "GET"})
             .then((res) => res.json())
             .then((data) => {
                 if(router.query.type=="vehicle"){
-                setData(data.vehicles)
+                    setData(data.vehicles)
                 }else{
-                setData(data.owners)
+                    setData(data.owners)
                 }
+
                 setLoading(false)
             });
 
@@ -51,12 +50,12 @@ export default function Search(){
                                 </div>
                             )
                         })
-                        ) : (  data.map((owners: any) => {
+                        ) : (  data.map((owner: any) => {
                             return (
                                 <div className=" border-b-2 border-primary border-opacity-50 pb-6">
-                                    <div className="text-xl font-bold py-4">{owners.address}</div>
-                                    <div>Name: {owners.name}</div>
-                                    <div>Surname: {owners.surname}</div>
+                                    <div className="text-xl font-bold py-4">{owner.address}</div>
+                                    <div>Name: {owner.name}</div>
+                                    <div>Surname: {owner.surname}</div>
                                 </div>
                             )
                         }) )}
