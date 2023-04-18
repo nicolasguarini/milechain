@@ -9,10 +9,22 @@ const handler: Handler = async (event: HandlerEvent, context: HandlerContext) =>
     if(event.httpMethod == "GET"){
         const network: string = event.queryStringParameters!.network!;
         const query: string = event.queryStringParameters!.query!;
+
+        if(query == "" || !query){
+            return {
+                statusCode: 400,
+                body: JSON.stringify({ message: "Invalid request" }),
+                headers: {"access-control-allow-origin": "*"}
+            }
+        }
+
         try{
             if(network == "sepolia" || network == "mainnet"){
                 const database: Db = (await clientPromise).db(`milechain-${network}`);
-                const vehicles: any[] = await database.collection("vehicles").find({"licenseplate":query}).toArray();
+                const vehicles: any[] = await database.collection("vehicles").find({ 
+                    licensePlate : {$regex: `${query}`}
+                }).toArray();
+
                 return {
                     statusCode: 200,
                     body: JSON.stringify({ vehicles: vehicles }),
@@ -39,4 +51,6 @@ const handler: Handler = async (event: HandlerEvent, context: HandlerContext) =>
             headers: {"access-control-allow-origin": "*"}
         }
     }                
-    }
+};
+
+export { handler };
