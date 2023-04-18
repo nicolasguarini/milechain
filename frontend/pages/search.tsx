@@ -12,8 +12,8 @@ export default function Search(){
         setLoading(true)
         if(!router.isReady) return;
         const url = router.query.type == "Vehicle" 
-            ? `http://localhost:8888/.netlify/functions/searchVehicles?network=sepolia&query=${router.query.content}`
-            : `http://localhost:8888/.netlify/functions/searchOwners?network=sepolia&query=${router.query.content}`
+            ? `https://milechain.netlify.app/.netlify/functions/searchVehicles?network=sepolia&query=${router.query.content}`
+            : `https://milechain.netlify.app/.netlify/functions/searchOwners?network=sepolia&query=${router.query.content}`
 
         fetch(url, {method: "GET"})
             .then((res) => res.json())
