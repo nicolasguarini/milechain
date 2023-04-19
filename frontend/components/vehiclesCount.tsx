@@ -1,21 +1,18 @@
-import { useState, useEffect } from 'react'
+import { useMoralis } from 'react-moralis';
+import useSWR from "swr";
+
+const fetcher = (apiURL: string) => fetch(apiURL).then(res => res.json());
 
 export default function VehiclesCount() {
-    const [data, setData] = useState(null)
-    const [isLoading, setLoading] = useState(false)
+  const { chainId: chainIdHex } = useMoralis();
+  const chainId = chainIdHex ? parseInt(chainIdHex) : 11155111; // sepolia as default network
 
-    useEffect(() => {
-        setLoading(true)
-        fetch("https://milechain.netlify.app/.netlify/functions/getVehiclesCount?network=sepolia", {method: "GET"})
-        .then((res) => res.json())
-        .then((data) => {
-          setData(data.count)
-          setLoading(false)
-        })
-      }, []);
+  const networkName = chainId == 11155111 ? "sepolia" : "sepolia" 
+  const url = `https://milechain.netlify.app/.netlify/functions/getOwnersCount?network=${networkName}`;
+  const { data, error } = useSWR(url, fetcher);
 
-      if (isLoading) return <p>Loading...</p>
-    if (!data) return <p>No data</p>
+  if (!data) return <p>Loading...</p>
+  if (error) return <p>Failed to load</p>
 
-    return <p>{data} currently registered vehicles</p>
+  return <p>{data.count} currently registered vehicles</p>
 }
