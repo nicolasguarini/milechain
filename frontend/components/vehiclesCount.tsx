@@ -8,7 +8,7 @@ export default function VehiclesCount() {
   const chainId = chainIdHex ? parseInt(chainIdHex) : 11155111; // sepolia as default network
 
   const networkName = chainId == 11155111 ? "sepolia" : "sepolia" 
-  const url = `https://milechain.netlify.app/.netlify/functions/getOwnersCount?network=${networkName}`;
+  const url = `https://milechain.netlify.app/.netlify/functions/getVehiclesCount?network=${networkName}`;
   const { data, error } = useSWR(url, fetcher);
 
   if (!data) return <p>Loading...</p>
