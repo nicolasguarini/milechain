@@ -34,4 +34,4 @@ const deployDb: DeployFunction = async function (hre: HardhatRuntimeEnvironment)
 }
 
 export default deployDb;
-deployDb.tags = ["db"];
+deployDb.tags = ["all", "db"];
