@@ -7,7 +7,7 @@ interface Props {
 }
 
 export default function AddVehicleModal(props: Props) {
-  const deploymentJSON = require("../constants/deployments/sepolia/MileChain.json");
+  const deploymentJSON = require("../../constants/deployments/sepolia/MileChain.json");
   const abi = deploymentJSON.abi;
   const contractAddress = deploymentJSON.address;
   const baseUrl = process.env.NEXT_PUBLIC_SERVER_BASE_URL;

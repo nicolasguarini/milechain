@@ -1,5 +1,5 @@
-import Container from "@/components/container";
-import Layout from "@/components/layout";
+import Container from "@/components/layout/container";
+import Layout from "@/components/layout/layout";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";

@@ -1,12 +1,12 @@
-import Container from "@/components/container";
-import Layout from "@/components/layout";
+import Container from "@/components/layout/container";
+import Layout from "@/components/layout/layout";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useMoralis, useWeb3Contract } from "react-moralis";
 import useSWR from "swr";
 import Link from "next/link";
-import UpdateMileageModal from "@/components/updateMileageModal";
-import AddVehicleModal from "@/components/addVehicleModal";
+import UpdateMileageModal from "@/components/modals/updateMileageModal";
+import AddVehicleModal from "@/components/modals/addVehicleModal";
 
 interface Owner {
   address: string;
