@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 
 export default function Search() {
   const router = useRouter();
-  const baseUrl = process.env.SERVER_BASE_URL;
+  const baseUrl = process.env.NEXT_PUBLIC_SERVER_BASE_URL;
   const [data, setData]: any[] = useState([]);
   const [isLoading, setLoading] = useState(true);
 

@@ -26,7 +26,7 @@ export default function OwnerPage() {
   const deploymentJSON = require("../../constants/deployments/sepolia/MileChain.json");
   const abi = deploymentJSON.abi;
   const contractAddress = deploymentJSON.address;
-  const baseUrl = process.env.SERVER_BASE_URL;
+  const baseUrl = process.env.NEXT_PUBLIC_SERVER_BASE_URL;
 
   const { chainId: chainIdHex } = useMoralis();
   const chainId = chainIdHex ? parseInt(chainIdHex) : 11155111; // sepolia as default network
