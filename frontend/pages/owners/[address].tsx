@@ -26,12 +26,13 @@ export default function OwnerPage() {
   const deploymentJSON = require("../../constants/deployments/sepolia/MileChain.json");
   const abi = deploymentJSON.abi;
   const contractAddress = deploymentJSON.address;
+  const baseUrl = process.env.SERVER_BASE_URL;
 
   const { chainId: chainIdHex } = useMoralis();
   const chainId = chainIdHex ? parseInt(chainIdHex) : 11155111; // sepolia as default network
 
   const networkName = chainId == 11155111 ? "sepolia" : "sepolia";
-  const url = `https://milechain.netlify.app/.netlify/functions/getVehiclesByOwner?network=${networkName}&address=${address}`;
+  const url = `${baseUrl}getVehiclesByOwner?network=${networkName}&address=${address}`;
   const { data, error } = useSWR(url, fetcher);
   const [newMileage, setNewMileage] = useState(0);
   const [licensePlateToUpdate, setLicensePlateToUpdate] = useState("");
@@ -61,7 +62,7 @@ export default function OwnerPage() {
       alert("Mileage updated successfully!");
       console.log("Mileage updated successfully on blockchain");
       await fetch(
-        `https://milechain.netlify.app/.netlify/functions/updateVehicle?network=sepolia&licensePlate=${licensePlateToUpdate}`
+        `${baseUrl}updateVehicle?network=sepolia&licensePlate=${licensePlateToUpdate}`
       )
         .then((res) => res.json())
         .then((data) => {
