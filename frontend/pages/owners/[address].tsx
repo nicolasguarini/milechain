@@ -6,6 +6,7 @@ import { useMoralis, useWeb3Contract } from "react-moralis";
 import useSWR from "swr";
 import Link from "next/link";
 import UpdateMileageModal from "@/components/updateMileageModal";
+import AddVehicleModal from "@/components/addVehicleModal";
 
 interface Owner {
   address: string;
@@ -27,7 +28,8 @@ export default function OwnerPage() {
 
   const [licensePlateToUpdate, setLicensePlateToUpdate] = useState("");
   const [mileageToUpdate, setMileageToUpdate] = useState(0);
-  const [showModal, setShowModal] = useState(false);
+  const [showMileageModal, setShowMileageModal] = useState(false);
+  const [showAddVehicleModal, setShowAddVehicleModal] = useState(false);
 
   const { chainId: chainIdHex } = useMoralis();
   const chainId = chainIdHex ? parseInt(chainIdHex) : 11155111; // sepolia as default network
@@ -55,6 +57,24 @@ export default function OwnerPage() {
         ) : (
           <div className="flex flex-col items-center">
             <div className="flex flex-col items-center">
+              {isWeb3Enabled &&
+              account?.toLowerCase() == address?.toString().toLowerCase() ? (
+                <>
+                  <button
+                    className="text-xl pb-1 pt-6 font-bold"
+                    onClick={() => {
+                      setShowAddVehicleModal(true);
+                    }}
+                  >
+                    Add Vehicle
+                  </button>
+
+                  <AddVehicleModal
+                    showModal={showAddVehicleModal}
+                    setShowModal={setShowAddVehicleModal}
+                  />
+                </>
+              ) : null}
               <h1>Vehicles</h1>
               {data.vehicles.map((vehicle: Vehicle) => {
                 return (
@@ -77,7 +97,7 @@ export default function OwnerPage() {
                         <button
                           className="text-xl pb-1 pt-6 font-bold"
                           onClick={() => {
-                            setShowModal(true);
+                            setShowMileageModal(true);
                             setLicensePlateToUpdate(vehicle.licensePlate);
                             setMileageToUpdate(vehicle.mileage);
                           }}
@@ -86,8 +106,8 @@ export default function OwnerPage() {
                         </button>
 
                         <UpdateMileageModal
-                          showModal={showModal}
-                          setShowModal={setShowModal}
+                          showModal={showMileageModal}
+                          setShowModal={setShowMileageModal}
                           licensePlateToUpdate={licensePlateToUpdate}
                           setLicensePlateToUpdate={setLicensePlateToUpdate}
                           mileageToUpdate={mileageToUpdate}
