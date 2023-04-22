@@ -3,6 +3,7 @@ import Layout from "@/components/layout/layout";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useMoralis, useWeb3Contract } from "react-moralis";
+import changeOwnerModel from "@/components/modals/changeOwner";
 
 interface Vehicle {
   licensePlate: string;
@@ -17,14 +18,18 @@ interface MileageRecord {
 
 export default function VehiclePage() {
   const router = useRouter();
+  const { address } = router.query;
+
   const { licensePlate } = router.query;
-  const { isWeb3Enabled } = useMoralis();
+  const { isWeb3Enabled, account } = useMoralis();
   const deploymentJSON = require("../../constants/deployments/sepolia/MileChain.json");
   const abi = deploymentJSON.abi;
   const contractAddress = deploymentJSON.address;
 
   const [vehicle, setVehicle] = useState<Vehicle>();
   const [mileageRecords, setMileageRecords] = useState<MileageRecord[]>([]);
+  const[showChangeOwner, setShowChangeOwner] = useState(false);
+
 
   const {
     runContractFunction: getVehicle,
@@ -63,7 +68,25 @@ export default function VehiclePage() {
         <h1 className="text-4xl font-bold text-center pt-6 border-b-2 pb-1 border-accent w-fit m-auto">
           {licensePlate}
         </h1>
+        {isWeb3Enabled &&
+              account?.toLowerCase() == address?.toString().toLowerCase() ? (
+                <>
+                  <button
+                    className="text-xl pb-1 pt-6 font-bold"
+                    onClick={() => {
+                      setShowChangeOwner(true);
+                    }}
+                  >
+                    Add Vehicle
+                  </button>
 
+                  <changeOwnerModel
+                    showModal={showChangeOwner}
+                    setShowModal={setShowChangeOwner}
+                  />
+
+                </>
+              ) : null}
         {isWeb3Enabled ? (
           <div className="mt-12 flex flex-row justify-center">
             {contractAddress ? (
