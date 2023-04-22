@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useMoralis, useWeb3Contract } from "react-moralis";
 import changeOwnerModel from "@/components/modals/changeOwner";
+import ChangeOwnerModel from "@/components/modals/changeOwner";
 
 interface Vehicle {
   licensePlate: string;
@@ -18,9 +19,8 @@ interface MileageRecord {
 
 export default function VehiclePage() {
   const router = useRouter();
-  const { address } = router.query;
 
-  const { licensePlate } = router.query;
+  const { licensePlate } = router.query!;
   const { isWeb3Enabled, account } = useMoralis();
   const deploymentJSON = require("../../constants/deployments/sepolia/MileChain.json");
   const abi = deploymentJSON.abi;
@@ -28,8 +28,7 @@ export default function VehiclePage() {
 
   const [vehicle, setVehicle] = useState<Vehicle>();
   const [mileageRecords, setMileageRecords] = useState<MileageRecord[]>([]);
-  const[showChangeOwner, setShowChangeOwner] = useState(false);
-
+  const [showChangeOwner, setShowChangeOwner] = useState(false);
 
   const {
     runContractFunction: getVehicle,
@@ -69,24 +68,24 @@ export default function VehiclePage() {
           {licensePlate}
         </h1>
         {isWeb3Enabled &&
-              account?.toLowerCase() == address?.toString().toLowerCase() ? (
-                <>
-                  <button
-                    className="text-xl pb-1 pt-6 font-bold"
-                    onClick={() => {
-                      setShowChangeOwner(true);
-                    }}
-                  >
-                    Add Vehicle
-                  </button>
+        account?.toLowerCase() == vehicle?.owner.toString().toLowerCase() ? (
+          <>
+            <button
+              className="text-xl pb-1 pt-6 font-bold"
+              onClick={() => {
+                setShowChangeOwner(true);
+              }}
+            >
+              Change owner
+            </button>
 
-                  <changeOwnerModel
-                    showModal={showChangeOwner}
-                    setShowModal={setShowChangeOwner}
-                  />
-
-                </>
-              ) : null}
+            <ChangeOwnerModel
+              showModal={showChangeOwner}
+              setShowModal={setShowChangeOwner}
+              licensePlate={licensePlate!.toString()}
+            />
+          </>
+        ) : null}
         {isWeb3Enabled ? (
           <div className="mt-12 flex flex-row justify-center">
             {contractAddress ? (
