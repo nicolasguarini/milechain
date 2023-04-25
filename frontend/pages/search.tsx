@@ -19,10 +19,12 @@ export default function Search() {
   useEffect(() => {
     setLoading(true);
     if (!router.isReady) return;
+
+    const queryParams = `chainId=${chainId}&query=${router.query.content}`;
     const url =
-      router.query.type == "vehicles"
-        ? `${baseUrl}searchVehicles?chainId=${chainId}&query=${router.query.content}`
-        : `${baseUrl}searchOwners?chainId=${chainId}&query=${router.query.content}`;
+      router.query.type === "vehicles"
+        ? `${baseUrl}searchVehicles?${queryParams}`
+        : `${baseUrl}searchOwners?${queryParams}`;
 
     fetch(url, { method: "GET" })
       .then((res) => res.json())
