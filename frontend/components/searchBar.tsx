@@ -3,6 +3,7 @@ import OwnersCount from "./ownersCount";
 import VehiclesCount from "./vehiclesCount";
 import { useState } from "react";
 import "flowbite";
+import { capitalize } from "@/utils/capitalize";
 
 export default function SearchBar() {
   const [input, setInput] = useState("");
@@ -28,7 +29,7 @@ export default function SearchBar() {
             className="flex-shrink-0 z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center border border-primary border-r-0 rounded-l-full"
             type="button"
           >
-            {type}
+            {capitalize(type)}
             <svg
               aria-hidden="true"
               className="w-4 h-4 ml-1"
