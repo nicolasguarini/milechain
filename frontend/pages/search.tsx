@@ -1,6 +1,6 @@
 import Container from "@/components/layout/container";
 import Layout from "@/components/layout/layout";
-import { chainsMap, defaultChain } from "@/constants/chains";
+import { defaultChain } from "@/constants/chains";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -13,15 +13,14 @@ export default function Search() {
   const [data, setData]: any[] = useState([]);
   const [isLoading, setLoading] = useState(true);
   const chainId: number = chainIdHex ? parseInt(chainIdHex) : defaultChain;
-  const networkName: string = chainsMap.get(chainId)!;
 
   useEffect(() => {
     setLoading(true);
     if (!router.isReady) return;
     const url =
       router.query.type == "vehicles"
-        ? `${baseUrl}searchVehicles?network=${networkName}&query=${router.query.content}`
-        : `${baseUrl}searchOwners?network=${networkName}&query=${router.query.content}`;
+        ? `${baseUrl}searchVehicles?chainId=${chainId}&query=${router.query.content}`
+        : `${baseUrl}searchOwners?chainId=${chainId}&query=${router.query.content}`;
 
     fetch(url, { method: "GET" })
       .then((res) => res.json())
@@ -49,7 +48,7 @@ export default function Search() {
         ) : (
           <div className="">
             {router.query.type == "vehicles"
-              ? data.map((vehicle: any) => {
+              ? data?.map((vehicle: any) => {
                   return (
                     <div
                       className=" border-b-2 border-primary border-opacity-50 pb-6"
@@ -67,7 +66,7 @@ export default function Search() {
                     </div>
                   );
                 })
-              : data.map((owner: any) => {
+              : data?.map((owner: any) => {
                   return (
                     <div
                       className=" border-b-2 border-primary border-opacity-50 pb-6"

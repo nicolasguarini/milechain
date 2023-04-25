@@ -1,4 +1,3 @@
-import { chainsMap, defaultChain } from "@/constants/chains";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useMoralis, useWeb3Contract } from "react-moralis";
 
@@ -14,7 +13,6 @@ export default function ChangeOwnerModal(props: Props) {
   const baseUrl = process.env.NEXT_PUBLIC_SERVER_BASE_URL;
   const { chainId: chainIdHex, isWeb3Enabled } = useMoralis();
   const chainId = chainIdHex ? parseInt(chainIdHex) : 0;
-  const networkName: string = chainsMap.get(chainId)!;
   const contractAddress = require("../../constants/addresses.json")[
     chainId.toString()
   ];
@@ -44,7 +42,7 @@ export default function ChangeOwnerModal(props: Props) {
       alert("Owner changed successfully!");
       console.log("Owner changed successfully on blockchain");
       await fetch(
-        `${baseUrl}updateVehicle?network=${networkName}&licensePlate=${props.licensePlate}`
+        `${baseUrl}updateVehicle?chainId=${chainId}&licensePlate=${props.licensePlate}`
       )
         .then((res) => res.json())
         .then((data) => {

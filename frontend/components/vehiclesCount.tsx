@@ -10,11 +10,12 @@ export default function VehiclesCount() {
 
   const chainId = chainIdHex ? parseInt(chainIdHex) : defaultChain;
   const networkName = chainsMap.get(chainId);
-  const url = `${baseUrl}getVehiclesCount?network=${networkName}`;
+  const url = `${baseUrl}getVehiclesCount?chainId=${chainId}`;
   const { data, error } = useSWR(url, fetcher);
 
   if (!data) return <p>Loading...</p>;
   if (error) return <p>Failed to load</p>;
+  if (networkName === undefined) return <p>Invalid network</p>;
 
   return <p>{data.count} currently registered vehicles</p>;
 }

@@ -7,13 +7,14 @@ import useSWR from "swr";
 import Link from "next/link";
 import UpdateMileageModal from "@/components/modals/updateMileageModal";
 import AddVehicleModal from "@/components/modals/addVehicleModal";
-import { chainsMap, defaultChain } from "@/constants/chains";
+import { defaultChain } from "@/constants/chains";
 
 interface Owner {
   address: string;
   name: string;
   surname: string;
 }
+
 interface Vehicle {
   licensePlate: string;
   mileage: number;
@@ -34,10 +35,9 @@ export default function OwnerPage() {
 
   const { chainId: chainIdHex } = useMoralis();
   const chainId = chainIdHex ? parseInt(chainIdHex) : defaultChain;
-  const networkName = chainsMap.get(chainId);
 
   const baseUrl = process.env.NEXT_PUBLIC_SERVER_BASE_URL;
-  const url = `${baseUrl}getVehiclesByOwner?network=${networkName}&address=${address}`;
+  const url = `${baseUrl}getVehiclesByOwner?chainId=${chainId}&address=${address}`;
   const { data, error } = useSWR(url, fetcher);
 
   useEffect(() => {
@@ -77,7 +77,7 @@ export default function OwnerPage() {
                 </>
               ) : null}
               <h1>Vehicles</h1>
-              {data.vehicles.map((vehicle: Vehicle) => {
+              {data?.vehicles?.map((vehicle: Vehicle) => {
                 return (
                   <div
                     className="flex flex-row gap-20 items-center"

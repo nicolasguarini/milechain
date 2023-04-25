@@ -1,4 +1,3 @@
-import { chainsMap } from "@/constants/chains";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useMoralis, useWeb3Contract } from "react-moralis";
 
@@ -15,7 +14,6 @@ export default function UpdateMileageModal(props: Props) {
   const baseUrl = process.env.NEXT_PUBLIC_SERVER_BASE_URL;
   const { chainId: chainIdHex, isWeb3Enabled } = useMoralis();
   const chainId = chainIdHex ? parseInt(chainIdHex) : 0;
-  const networkName: string = chainsMap.get(chainId)!;
   const contractAddress = require("../../constants/addresses.json")[
     chainId.toString()
   ];
@@ -46,7 +44,7 @@ export default function UpdateMileageModal(props: Props) {
       alert("Mileage updated successfully!");
       console.log("Mileage updated successfully on blockchain");
       await fetch(
-        `${baseUrl}updateVehicle?network=${networkName}&licensePlate=${props.licensePlateToUpdate}`
+        `${baseUrl}updateVehicle?chainId=${chainId}&licensePlate=${props.licensePlateToUpdate}`
       )
         .then((res) => res.json())
         .then((data) => {

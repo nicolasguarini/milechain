@@ -1,6 +1,7 @@
 import { Handler, HandlerEvent, HandlerContext } from "@netlify/functions";
 import { Db } from "mongodb";
 import { MongoClient } from "mongodb";
+import { chainsMap } from "../constants/chains";
 
 const mongoClient: MongoClient = new MongoClient(process.env.DB_CONN_STRING!);
 const clientPromise = mongoClient.connect();
@@ -10,8 +11,9 @@ const handler: Handler = async (
   context: HandlerContext
 ) => {
   if (event.httpMethod == "GET") {
-    const network: string = event.queryStringParameters!.network!;
     const query: string = event.queryStringParameters!.query!;
+    const chainId: number = parseInt(event.queryStringParameters!.chainId!);
+    const networkName = chainsMap.get(chainId);
 
     if (query == "" || !query) {
       return {
@@ -22,8 +24,10 @@ const handler: Handler = async (
     }
 
     try {
-      if (network == "sepolia" || network == "mainnet") {
-        const database: Db = (await clientPromise).db(`milechain-${network}`);
+      if (networkName) {
+        const database: Db = (await clientPromise).db(
+          `milechain-${networkName}`
+        );
         const vehicles: any[] = await database
           .collection("vehicles")
           .find({

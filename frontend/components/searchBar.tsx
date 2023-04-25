@@ -4,19 +4,24 @@ import VehiclesCount from "./vehiclesCount";
 import { useState } from "react";
 import "flowbite";
 import { capitalize } from "@/utils/capitalize";
+import { useMoralis } from "react-moralis";
+import { chainsMap, defaultChain } from "@/constants/chains";
 
 export default function SearchBar() {
+  const { chainId: chainIdHex } = useMoralis();
+  const chainId = chainIdHex ? parseInt(chainIdHex) : defaultChain;
+  const networkName = chainsMap.get(chainId);
   const [input, setInput] = useState("");
   const [type, setType] = useState("vehicles");
   const router = useRouter();
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
-    router.push(`/search?type=${type}&content=${input}`);
-  };
-
-  const handleTypeChange = (newType: string) => {
-    setType(newType);
+    if (networkName !== undefined) {
+      router.push(`/search?type=${type}&content=${input}`);
+    } else {
+      alert("Invalid network!");
+    }
   };
 
   return (

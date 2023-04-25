@@ -1,8 +1,8 @@
 import { Handler, HandlerContext, HandlerEvent } from "@netlify/functions";
 import { Db, MongoClient } from "mongodb";
 import Web3 from "web3";
-import { address, abi } from "../deployments/sepolia/MileChain.json";
 import { AbiItem } from "web3-utils";
+import { chainsMap } from "../constants/chains";
 
 const mongoClient: MongoClient = new MongoClient(process.env.DB_CONN_STRING!);
 const clientPromise = mongoClient.connect();
@@ -12,8 +12,11 @@ const handler: Handler = async (
   context: HandlerContext
 ) => {
   if (event.httpMethod == "GET") {
-    const network: string = event.queryStringParameters!.network!;
     const licensePlate: string = event.queryStringParameters!.licensePlate!;
+    const chainId: number = parseInt(event.queryStringParameters!.chainId!);
+    const networkName = chainsMap.get(chainId);
+    const address = require("../constants/addresses.json")[chainId.toString()];
+    const abi = require("../constants/abi.json");
 
     if (licensePlate == "" || !licensePlate) {
       return {
@@ -24,14 +27,14 @@ const handler: Handler = async (
     }
 
     try {
-      if (network == "sepolia" || network == "mainnet") {
+      if (networkName !== undefined && address !== undefined) {
         const web3 = new Web3(process.env.SEPOLIA_URL!);
         const contract = new web3.eth.Contract(abi as AbiItem[], address);
         let message = "";
         const blockchainVehicle = await contract.methods
           .getVehicle(licensePlate)
           .call();
-        const db = (await clientPromise).db(`milechain-${network}`);
+        const db = (await clientPromise).db(`milechain-${networkName}`);
         const dbVehicle = await db.collection("vehicles").findOne({
           licensePlate: { $regex: `${licensePlate}`, $options: "i" },
         });
