@@ -1,27 +1,32 @@
 import Container from "@/components/layout/container";
 import Layout from "@/components/layout/layout";
+import { chainsMap, defaultChain } from "@/constants/chains";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import { useMoralis } from "react-moralis";
 
 export default function Search() {
+  const { chainId: chainIdHex } = useMoralis();
   const router = useRouter();
   const baseUrl = process.env.NEXT_PUBLIC_SERVER_BASE_URL;
   const [data, setData]: any[] = useState([]);
   const [isLoading, setLoading] = useState(true);
+  const chainId: number = chainIdHex ? parseInt(chainIdHex) : defaultChain;
+  const networkName: string = chainsMap.get(chainId)!;
 
   useEffect(() => {
     setLoading(true);
     if (!router.isReady) return;
     const url =
-      router.query.type == "Vehicles"
-        ? `${baseUrl}searchVehicles?network=sepolia&query=${router.query.content}`
-        : `${baseUrl}searchOwners?network=sepolia&query=${router.query.content}`;
+      router.query.type == "vehicles"
+        ? `${baseUrl}searchVehicles?network=${networkName}&query=${router.query.content}`
+        : `${baseUrl}searchOwners?network=${networkName}&query=${router.query.content}`;
 
     fetch(url, { method: "GET" })
       .then((res) => res.json())
       .then((data) => {
-        if (router.query.type == "Vehicles") {
+        if (router.query.type == "vehicles") {
           setData(data.vehicles);
         } else {
           setData(data.owners);
@@ -43,7 +48,7 @@ export default function Search() {
           <div>Loading...</div>
         ) : (
           <div className="">
-            {router.query.type == "Vehicles"
+            {router.query.type == "vehicles"
               ? data.map((vehicle: any) => {
                   return (
                     <div

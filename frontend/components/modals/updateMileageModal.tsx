@@ -1,3 +1,4 @@
+import { chainsMap } from "@/constants/chains";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useMoralis, useWeb3Contract } from "react-moralis";
 
@@ -11,13 +12,15 @@ interface Props {
 }
 
 export default function UpdateMileageModal(props: Props) {
-  const deploymentJSON = require("../../constants/deployments/sepolia/MileChain.json");
-  const abi = deploymentJSON.abi;
-  const contractAddress = deploymentJSON.address;
   const baseUrl = process.env.NEXT_PUBLIC_SERVER_BASE_URL;
-  const { chainId: chainIdHex, isWeb3Enabled, account } = useMoralis();
-  const chainId = chainIdHex ? parseInt(chainIdHex) : 11155111; // sepolia as default network
-  const networkName = chainId == 11155111 ? "sepolia" : "sepolia";
+  const { chainId: chainIdHex, isWeb3Enabled } = useMoralis();
+  const chainId = chainIdHex ? parseInt(chainIdHex) : 0;
+  const networkName: string = chainsMap.get(chainId)!;
+  const contractAddress = require("../../constants/addresses.json")[
+    chainId.toString()
+  ];
+  const abi = require("../../constants/abi.json");
+
   const [newMileage, setNewMileage] = useState(0);
 
   useEffect(() => {

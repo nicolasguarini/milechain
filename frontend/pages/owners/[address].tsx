@@ -2,11 +2,12 @@ import Container from "@/components/layout/container";
 import Layout from "@/components/layout/layout";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { useMoralis, useWeb3Contract } from "react-moralis";
+import { useMoralis } from "react-moralis";
 import useSWR from "swr";
 import Link from "next/link";
 import UpdateMileageModal from "@/components/modals/updateMileageModal";
 import AddVehicleModal from "@/components/modals/addVehicleModal";
+import { chainsMap, defaultChain } from "@/constants/chains";
 
 interface Owner {
   address: string;
@@ -32,8 +33,8 @@ export default function OwnerPage() {
   const [showAddVehicleModal, setShowAddVehicleModal] = useState(false);
 
   const { chainId: chainIdHex } = useMoralis();
-  const chainId = chainIdHex ? parseInt(chainIdHex) : 11155111; // sepolia as default network
-  const networkName = chainId == 11155111 ? "sepolia" : "sepolia";
+  const chainId = chainIdHex ? parseInt(chainIdHex) : defaultChain;
+  const networkName = chainsMap.get(chainId);
 
   const baseUrl = process.env.NEXT_PUBLIC_SERVER_BASE_URL;
   const url = `${baseUrl}getVehiclesByOwner?network=${networkName}&address=${address}`;

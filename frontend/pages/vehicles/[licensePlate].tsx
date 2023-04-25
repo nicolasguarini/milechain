@@ -3,8 +3,7 @@ import Layout from "@/components/layout/layout";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useMoralis, useWeb3Contract } from "react-moralis";
-import changeOwnerModel from "@/components/modals/changeOwner";
-import ChangeOwnerModel from "@/components/modals/changeOwner";
+import ChangeOwnerModal from "@/components/modals/changeOwnerModal";
 
 interface Vehicle {
   licensePlate: string;
@@ -19,12 +18,13 @@ interface MileageRecord {
 
 export default function VehiclePage() {
   const router = useRouter();
-
   const { licensePlate } = router.query!;
-  const { isWeb3Enabled, account } = useMoralis();
-  const deploymentJSON = require("../../constants/deployments/sepolia/MileChain.json");
-  const abi = deploymentJSON.abi;
-  const contractAddress = deploymentJSON.address;
+  const { chainId: chainIdHex, isWeb3Enabled, account } = useMoralis();
+  const chainId: number = chainIdHex ? parseInt(chainIdHex) : 0;
+  const contractAddress: string = require("../../constants/addresses.json")[
+    chainId
+  ];
+  const abi = require("../../constants/abi.json");
 
   const [vehicle, setVehicle] = useState<Vehicle>();
   const [mileageRecords, setMileageRecords] = useState<MileageRecord[]>([]);
@@ -67,25 +67,7 @@ export default function VehiclePage() {
         <h1 className="text-4xl font-bold text-center pt-6 border-b-2 pb-1 border-accent w-fit m-auto">
           {licensePlate}
         </h1>
-        {isWeb3Enabled &&
-        account?.toLowerCase() == vehicle?.owner.toString().toLowerCase() ? (
-          <>
-            <button
-              className="text-xl pb-1 pt-6 font-bold"
-              onClick={() => {
-                setShowChangeOwner(true);
-              }}
-            >
-              Change owner
-            </button>
 
-            <ChangeOwnerModel
-              showModal={showChangeOwner}
-              setShowModal={setShowChangeOwner}
-              licensePlate={licensePlate!.toString()}
-            />
-          </>
-        ) : null}
         {isWeb3Enabled ? (
           <div className="mt-12 flex flex-row justify-center">
             {contractAddress ? (
@@ -94,6 +76,25 @@ export default function VehiclePage() {
                   <div className="animate-spin spinner-border h-8 w-8 border-b-2 rounded-full"></div>
                 ) : (
                   <div>
+                    {account?.toLowerCase() ==
+                    vehicle?.owner.toString().toLowerCase() ? (
+                      <>
+                        <button
+                          className="text-xl pb-1 pt-6 font-bold"
+                          onClick={() => {
+                            setShowChangeOwner(true);
+                          }}
+                        >
+                          Change owner
+                        </button>
+
+                        <ChangeOwnerModal
+                          showModal={showChangeOwner}
+                          setShowModal={setShowChangeOwner}
+                          licensePlate={licensePlate!.toString()}
+                        />
+                      </>
+                    ) : null}
                     <h1 className="text-3xl font-bold">
                       LICENSE PLATE: {vehicle?.licensePlate}
                     </h1>
