@@ -112,7 +112,10 @@ export default function VehiclePage() {
                             MILEAGE: {mileageRecord.mileage.toString()}
                           </h2>
                           <h2 className="text-2xl">
-                            TIMESTAMP: {mileageRecord.timestamp.toString()}
+                            TIMESTAMP:{" "}
+                            {new Date(
+                              mileageRecord.timestamp * 1000
+                            ).toLocaleString("it")}
                           </h2>
                         </div>
                       );
