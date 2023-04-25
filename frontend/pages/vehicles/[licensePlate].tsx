@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useMoralis, useWeb3Contract } from "react-moralis";
 import ChangeOwnerModal from "@/components/modals/changeOwnerModal";
+import InvalidNetwork from "@/components/invalidNetwork";
 
 interface Vehicle {
   licensePlate: string;
@@ -124,7 +125,7 @@ export default function VehiclePage() {
                 )}
               </div>
             ) : (
-              <div>Chain not supported!</div>
+              <InvalidNetwork />
             )}
           </div>
         ) : (

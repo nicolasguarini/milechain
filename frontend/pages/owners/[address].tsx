@@ -7,7 +7,8 @@ import useSWR from "swr";
 import Link from "next/link";
 import UpdateMileageModal from "@/components/modals/updateMileageModal";
 import AddVehicleModal from "@/components/modals/addVehicleModal";
-import { defaultChain } from "@/constants/chains";
+import { chainsMap, defaultChain } from "@/constants/chains";
+import InvalidNetwork from "@/components/invalidNetwork";
 
 interface Owner {
   address: string;
@@ -35,6 +36,7 @@ export default function OwnerPage() {
 
   const { chainId: chainIdHex } = useMoralis();
   const chainId = chainIdHex ? parseInt(chainIdHex) : defaultChain;
+  const networkName = chainsMap.get(chainId);
 
   const baseUrl = process.env.NEXT_PUBLIC_SERVER_BASE_URL;
   const url = `${baseUrl}getVehiclesByOwner?chainId=${chainId}&address=${address}`;
@@ -44,6 +46,16 @@ export default function OwnerPage() {
     if (isWeb3Enabled) {
     }
   }, []);
+
+  if (networkName === undefined) {
+    return (
+      <Layout>
+        <Container>
+          <InvalidNetwork />
+        </Container>
+      </Layout>
+    );
+  }
 
   return (
     <Layout>

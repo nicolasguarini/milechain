@@ -1,6 +1,7 @@
+import InvalidNetwork from "@/components/invalidNetwork";
 import Container from "@/components/layout/container";
 import Layout from "@/components/layout/layout";
-import { defaultChain } from "@/constants/chains";
+import { chainsMap, defaultChain } from "@/constants/chains";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -13,6 +14,7 @@ export default function Search() {
   const [data, setData]: any[] = useState([]);
   const [isLoading, setLoading] = useState(true);
   const chainId: number = chainIdHex ? parseInt(chainIdHex) : defaultChain;
+  const networkName = chainsMap.get(chainId);
 
   useEffect(() => {
     setLoading(true);
@@ -34,6 +36,15 @@ export default function Search() {
     setLoading(false);
   }, [router.isReady]);
 
+  if (networkName === undefined) {
+    return (
+      <Layout>
+        <Container>
+          <InvalidNetwork />
+        </Container>
+      </Layout>
+    );
+  }
   return (
     <Layout>
       <Container>
