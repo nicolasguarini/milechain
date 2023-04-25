@@ -32,9 +32,9 @@ const handler: Handler = async (
           .getVehicle(licensePlate)
           .call();
         const db = (await clientPromise).db(`milechain-${network}`);
-        const dbVehicle = await db
-          .collection("vehicles")
-          .findOne({ licensePlate: licensePlate });
+        const dbVehicle = await db.collection("vehicles").findOne({
+          licensePlate: { $regex: `${licensePlate}`, $options: "i" },
+        });
 
         if (blockchainVehicle) {
           console.log("Vehicle found on blockchain!");
@@ -47,9 +47,12 @@ const handler: Handler = async (
               mileage: blockchainVehicle.mileage,
             });
 
-            const owner = await db
-              .collection("owners")
-              .findOne({ address: blockchainVehicle.owner });
+            const owner = await db.collection("owners").findOne({
+              address: {
+                $regex: `${blockchainVehicle.owner}`,
+                $options: "i",
+              },
+            });
             if (!owner) {
               await db.collection("owners").insertOne({
                 address: blockchainVehicle.owner,
@@ -68,7 +71,9 @@ const handler: Handler = async (
             if (bcOwner != dbOwner || bcMileage != dbMileage) {
               console.log("Found updates on blockchain, updating DB...");
               await db.collection("vehicles").updateOne(
-                { licensePlate: bcLicensePlate },
+                {
+                  licensePlate: { $regex: `${bcLicensePlate}`, $options: "i" },
+                },
                 {
                   $set: {
                     owner: bcOwner,
