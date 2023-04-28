@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { useMoralis, useWeb3Contract } from "react-moralis";
 import ChangeOwnerModal from "@/components/modals/changeOwnerModal";
 import InvalidNetwork from "@/components/invalidNetwork";
+import Chart from "@/components/chart";
 
 interface Vehicle {
   licensePlate: string;
@@ -30,6 +31,8 @@ export default function VehiclePage() {
   const [vehicle, setVehicle] = useState<Vehicle>();
   const [mileageRecords, setMileageRecords] = useState<MileageRecord[]>([]);
   const [showChangeOwner, setShowChangeOwner] = useState(false);
+  const [mileages, setMileages] = useState<number[]>([]);
+  const [timestamps, setTimestamps] = useState<number[]>([]);
 
   const {
     runContractFunction: getVehicle,
@@ -52,6 +55,12 @@ export default function VehiclePage() {
   async function updateUI() {
     const vehicle = (await getVehicle()) as Vehicle;
     const mileageRecords = (await getMileageRecords()) as MileageRecord[];
+    const mileages= mileageRecords.map((mileageRecord) => mileageRecord.mileage);
+    const timestamps= mileageRecords.map((mileageRecord) => mileageRecord.timestamp );
+    console.log(mileages);
+    console.log(timestamps);
+    setMileages(mileages);
+    setTimestamps(timestamps);
     setVehicle(vehicle);
     setMileageRecords(mileageRecords);
   }
@@ -105,6 +114,7 @@ export default function VehiclePage() {
                     <h2 className="text-2xl">
                       OWNER: {vehicle?.owner.toString()}
                     </h2>
+                    <Chart mileages={mileages} timestamps={timestamps}/>
                     <h1 className="text-3xl font-bold">MILEAGE RECORDS:</h1>
                     {mileageRecords?.map((mileageRecord: MileageRecord) => {
                       return (
