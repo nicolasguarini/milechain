@@ -19,9 +19,8 @@ export default function AddVehicleModal(props: Props) {
   const [mileage, setMileage] = useState(0);
 
   useEffect(() => {
-    if (isWeb3Enabled) {
-    }
-  }, []);
+    if (isWeb3Enabled) return;
+  }, [isWeb3Enabled]);
 
   const {
     runContractFunction: addVehicle,

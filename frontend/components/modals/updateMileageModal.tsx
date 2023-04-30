@@ -22,9 +22,8 @@ export default function UpdateMileageModal(props: Props) {
   const [newMileage, setNewMileage] = useState(0);
 
   useEffect(() => {
-    if (isWeb3Enabled) {
-    }
-  }, []);
+    if (isWeb3Enabled) return;
+  }, [isWeb3Enabled]);
 
   const {
     runContractFunction: updateMileage,

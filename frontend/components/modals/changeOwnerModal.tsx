@@ -20,9 +20,8 @@ export default function ChangeOwnerModal(props: Props) {
   const [newOwner, setNewOwner] = useState("");
 
   useEffect(() => {
-    if (isWeb3Enabled) {
-    }
-  }, []);
+    if (isWeb3Enabled) return;
+  }, [isWeb3Enabled]);
 
   const {
     runContractFunction: changeOwner,
