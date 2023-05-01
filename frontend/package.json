@@ -22,6 +22,7 @@
     "magic-sdk": "^17.0.0",
     "moralis": "^2.18.4",
     "next": "13.3.0",
+    "notiflix": "^3.2.6",
     "postcss": "8.4.21",
     "react": "18.2.0",
     "react-chartjs-2": "^5.2.0",
