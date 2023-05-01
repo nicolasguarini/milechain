@@ -1,5 +1,6 @@
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { useMoralis, useWeb3Contract } from "react-moralis";
+import { ReactMoralisError, useMoralis, useWeb3Contract } from "react-moralis";
+import Spinner from "../spinner";
 
 interface Props {
   showModal: boolean;
@@ -18,6 +19,7 @@ export default function ChangeOwnerModal(props: Props) {
   ];
 
   const [newOwner, setNewOwner] = useState("");
+  const [modalLoading, setModalLoading] = useState(false);
 
   useEffect(() => {
     if (isWeb3Enabled) return;
@@ -51,18 +53,19 @@ export default function ChangeOwnerModal(props: Props) {
     } catch (e) {
       console.log(e);
     }
-
+    setModalLoading(false);
     props.setShowModal(false);
   };
 
-  const handleError = async (error: any) => {
-    alert("Error: " + error.toString());
+  const handleError = async (error: ReactMoralisError) => {
+    setModalLoading(false);
+    alert("Error: " + error.message);
   };
 
   const handleClick = async () => {
     console.log("lp: " + props.licensePlate);
     console.log("newOwner: " + newOwner);
-
+    setModalLoading(true);
     await changeOwner({
       onSuccess: handleSuccess,
       onError: handleError,
@@ -75,7 +78,12 @@ export default function ChangeOwnerModal(props: Props) {
         <>
           <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
             <div className="relative w-auto my-6 mx-auto max-w-3xl">
-              {contractAddress ? (
+              {modalLoading ? (
+                <div className="px-9 py-14 bg-dark rounded-lg flex flex-col gap-3">
+                  <h3 className="font-bold text-xl mb-8">Please wait...</h3>
+                  <Spinner />
+                </div>
+              ) : (
                 <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-dark outline-none focus:outline-none">
                   {/*header*/}
                   <div className="flex items-start justify-center p-5 rounded-t">
@@ -113,7 +121,7 @@ export default function ChangeOwnerModal(props: Props) {
                     </button>
                   </div>
                 </div>
-              ) : null}
+              )}
             </div>
           </div>
           <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>

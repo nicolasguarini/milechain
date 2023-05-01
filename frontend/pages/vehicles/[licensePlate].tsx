@@ -6,6 +6,7 @@ import { useMoralis, useWeb3Contract } from "react-moralis";
 import ChangeOwnerModal from "@/components/modals/changeOwnerModal";
 import InvalidNetwork from "@/components/invalidNetwork";
 import Chart from "@/components/chart";
+import Spinner from "@/components/spinner";
 
 interface Vehicle {
   licensePlate: string;
@@ -55,8 +56,12 @@ export default function VehiclePage() {
   async function updateUI() {
     const vehicle = (await getVehicle()) as Vehicle;
     const mileageRecords = (await getMileageRecords()) as MileageRecord[];
-    const mileages= mileageRecords.map((mileageRecord) => mileageRecord.mileage);
-    const timestamps= mileageRecords.map((mileageRecord) => mileageRecord.timestamp );
+    const mileages = mileageRecords.map(
+      (mileageRecord) => mileageRecord.mileage
+    );
+    const timestamps = mileageRecords.map(
+      (mileageRecord) => mileageRecord.timestamp
+    );
     console.log(mileages);
     console.log(timestamps);
     setMileages(mileages);
@@ -83,7 +88,7 @@ export default function VehiclePage() {
             {contractAddress ? (
               <div>
                 {isLoading || isFetching ? (
-                  <div className="animate-spin spinner-border h-8 w-8 border-b-2 rounded-full"></div>
+                  <Spinner />
                 ) : (
                   <div>
                     {account?.toLowerCase() ==
@@ -114,7 +119,7 @@ export default function VehiclePage() {
                     <h2 className="text-2xl">
                       OWNER: {vehicle?.owner.toString()}
                     </h2>
-                    <Chart mileages={mileages} timestamps={timestamps}/>
+                    <Chart mileages={mileages} timestamps={timestamps} />
                     <h1 className="text-3xl font-bold">MILEAGE RECORDS:</h1>
                     {mileageRecords?.map((mileageRecord: MileageRecord) => {
                       return (
