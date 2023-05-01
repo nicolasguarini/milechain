@@ -1,6 +1,7 @@
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { ReactMoralisError, useMoralis, useWeb3Contract } from "react-moralis";
 import Spinner from "../spinner";
+import { Notify } from "notiflix";
 
 interface Props {
   showModal: boolean;
@@ -40,14 +41,14 @@ export default function ChangeOwnerModal(props: Props) {
   const handleSuccess = async (tx: any) => {
     try {
       await tx.wait(1);
-      alert("Owner changed successfully!");
+      Notify.success("Owner changed successfully!");
       console.log("Owner changed successfully on blockchain");
       await fetch(
         `${baseUrl}updateVehicle?chainId=${chainId}&licensePlate=${props.licensePlate}`
       )
         .then((res) => res.json())
         .then((data) => {
-          alert("DB Updated!");
+          Notify.success("DB Updated!");
           console.log("Server response: " + data.message);
         });
     } catch (e) {
@@ -59,7 +60,8 @@ export default function ChangeOwnerModal(props: Props) {
 
   const handleError = async (error: ReactMoralisError) => {
     setModalLoading(false);
-    alert("Error: " + error.message);
+    console.error(error.message);
+    Notify.failure(error.message);
   };
 
   const handleClick = async () => {

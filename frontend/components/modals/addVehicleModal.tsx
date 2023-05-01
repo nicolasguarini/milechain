@@ -1,6 +1,7 @@
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { ReactMoralisError, useMoralis, useWeb3Contract } from "react-moralis";
 import Spinner from "../spinner";
+import { Notify } from "notiflix";
 
 interface Props {
   showModal: boolean;
@@ -39,14 +40,14 @@ export default function AddVehicleModal(props: Props) {
   const handleSuccess = async (tx: any) => {
     try {
       await tx.wait(1);
-      alert("Vehicle added successfully!");
+      Notify.success("Vehicle added successfully!");
       console.log("Vehicle added successfully on blockchain");
       await fetch(
         `${baseUrl}updateVehicle?chainId=${chainId}&licensePlate=${licensePlate}`
       )
         .then((res) => res.json())
         .then((data) => {
-          alert("DB Updated!");
+          Notify.success("Database Updated!");
           console.log("Server response: " + data.message);
         });
     } catch (e) {
@@ -58,7 +59,7 @@ export default function AddVehicleModal(props: Props) {
 
   const handleError = async (error: ReactMoralisError) => {
     setModalLoading(false);
-    alert("Error: " + error.message);
+    Notify.failure(error.message);
   };
 
   const handleClick = async () => {
