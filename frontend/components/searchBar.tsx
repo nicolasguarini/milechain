@@ -6,6 +6,7 @@ import "flowbite";
 import { capitalize } from "@/utils/capitalize";
 import { useMoralis } from "react-moralis";
 import { chainsMap, defaultChain } from "@/constants/chains";
+import Link from "next/link";
 
 export default function SearchBar() {
   const { chainId: chainIdHex } = useMoralis();
@@ -119,6 +120,9 @@ export default function SearchBar() {
       <div className="flex flex-row w-full  justify-between text-primary-darker opacity-50 text-sm m-auto">
         <VehiclesCount />
         <OwnersCount />
+      </div>
+      <div className="flex flex-row w-full justify-center">
+        <Link href="/advanced-search">Advanced Search</Link>
       </div>
     </div>
   );
