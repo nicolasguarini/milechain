@@ -63,6 +63,11 @@ const handler: Handler = async (
             }
 
             message = "Vehicle inserted in db";
+            return {
+              statusCode: 200,
+              body: JSON.stringify({ vehicle: blockchainVehicle, message}),
+              headers: { "access-control-allow-origin": "*" },
+            };
           } else {
             const bcLicensePlate = blockchainVehicle.licensePlate;
             const bcMileage = blockchainVehicle.mileage;
