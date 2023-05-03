@@ -62,10 +62,10 @@ const handler: Handler = async (
               });
             }
 
-            message = "Vehicle inserted in db";
+            message = "Vehicle inserted in db and retun vehicle";
             return {
               statusCode: 200,
-              body: JSON.stringify({ vehicle: blockchainVehicle, message}),
+              body: JSON.stringify({ vehicle: blockchainVehicle, message: message}),
               headers: { "access-control-allow-origin": "*" },
             };
           } else {
