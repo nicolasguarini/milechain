@@ -29,7 +29,7 @@ const handler: Handler = async (
           `milechain-${networkName}`
         );
         const vehicle: any = await database.collection("vehicles").findOne({
-          licensePlate: { $regex: `${query}`, $options: "i" },
+          licensePlate: query.toUpperCase(),
         });
         console.log(vehicle);
         return {
