@@ -31,9 +31,16 @@ const handler: Handler = async (
         const web3 = new Web3(process.env.SEPOLIA_URL!);
         const contract = new web3.eth.Contract(abi as AbiItem[], address);
         let message = "";
-        const blockchainVehicle = await contract.methods
-          .getVehicle(licensePlate)
-          .call();
+
+        let blockchainVehicle = null;
+        try {
+          blockchainVehicle = await contract.methods
+            .getVehicle(licensePlate)
+            .call();
+        } catch (e) {
+          blockchainVehicle = null;
+        }
+
         const db = (await clientPromise).db(`milechain-${networkName}`);
         const dbVehicle = await db.collection("vehicles").findOne({
           licensePlate: { $regex: `${licensePlate}`, $options: "i" },
@@ -56,6 +63,7 @@ const handler: Handler = async (
                 $options: "i",
               },
             });
+
             if (!owner) {
               await db.collection("owners").insertOne({
                 address: blockchainVehicle.owner,
@@ -65,7 +73,10 @@ const handler: Handler = async (
             message = "Vehicle inserted in db and retun vehicle";
             return {
               statusCode: 200,
-              body: JSON.stringify({ vehicle: blockchainVehicle, message: message}),
+              body: JSON.stringify({
+                vehicle: blockchainVehicle,
+                message: message,
+              }),
               headers: { "access-control-allow-origin": "*" },
             };
           } else {
