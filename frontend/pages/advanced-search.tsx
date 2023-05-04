@@ -41,16 +41,13 @@ export default function AdvancedSearchPage() {
       .then((res) => {
         console.log("Response code: " + res.status.toString());
         res.json().then((data) => {
-          console.log(data.vehicle);
+          Notify.info(data.message);
           if (data.vehicle != undefined && data.vehicle != null) {
-            Notify.success(`Vehicle ${data.vehicle[0]} found on blockchain`);
             setVehicle({
               licensePlate: data.vehicle[0],
               owner: data.vehicle[1],
               mileage: data.vehicle[2],
             });
-          } else {
-            Notify.failure("Vehicle not found in blockchain");
           }
         });
       })
@@ -114,10 +111,7 @@ export default function AdvancedSearchPage() {
                 {vehicle.licensePlate} - {vehicle.mileage}km
               </div>
 
-              <button
-                className="block"
-                onClick={() => Notify.success("Update Blockchain clicked")}
-              >
+              <button className="block" onClick={handleCheckBlockchainClick}>
                 Update from blockchain
               </button>
             </div>
