@@ -19,6 +19,11 @@ interface MileageRecord {
   timestamp: number;
 }
 
+interface OwnersRecord {
+  owner: string;
+  timestamp: number;
+}
+
 export default function VehiclePage() {
   const router = useRouter();
   const { licensePlate } = router.query!;
@@ -34,6 +39,7 @@ export default function VehiclePage() {
   const [showChangeOwner, setShowChangeOwner] = useState(false);
   const [mileages, setMileages] = useState<number[]>([]);
   const [timestamps, setTimestamps] = useState<number[]>([]);
+  const [ownersRecords, setOwnersRecords] = useState<OwnersRecord[]>([]);
 
   const {
     runContractFunction: getVehicle,
@@ -53,9 +59,18 @@ export default function VehiclePage() {
     params: { licensePlate },
   });
 
+  const { runContractFunction: getOwnersRecords } = useWeb3Contract({
+    abi: abi,
+    contractAddress: contractAddress,
+    functionName: "getOwnersRecords",
+    params: { licensePlate },
+  });
+
   async function updateUI() {
     const vehicle = (await getVehicle()) as Vehicle;
     const mileageRecords = (await getMileageRecords()) as MileageRecord[];
+    const ownersRecords = (await getOwnersRecords()) as OwnersRecord[];
+
     const mileages = mileageRecords.map(
       (mileageRecord) => mileageRecord.mileage
     );
@@ -68,6 +83,7 @@ export default function VehiclePage() {
     setTimestamps(timestamps);
     setVehicle(vehicle);
     setMileageRecords(mileageRecords);
+    setOwnersRecords(ownersRecords);
   }
 
   useEffect(() => {
@@ -131,6 +147,25 @@ export default function VehiclePage() {
                             TIMESTAMP:{" "}
                             {new Date(
                               mileageRecord.timestamp * 1000
+                            ).toLocaleString("it")}
+                          </h2>
+                        </div>
+                      );
+                    })}
+
+                    <h1 className="text-3xl font-bold mt-12">
+                      OWNERS RECORDS:
+                    </h1>
+                    {ownersRecords?.map((ownersRecord: OwnersRecord) => {
+                      return (
+                        <div key={ownersRecord.timestamp.toString()}>
+                          <h2 className="text-2xl">
+                            Owner: {ownersRecord.owner}
+                          </h2>
+                          <h2 className="text-2xl">
+                            TIMESTAMP:{" "}
+                            {new Date(
+                              ownersRecord.timestamp * 1000
                             ).toLocaleString("it")}
                           </h2>
                         </div>
