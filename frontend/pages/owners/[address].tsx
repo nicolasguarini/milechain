@@ -7,8 +7,10 @@ import useSWR from "swr";
 import Link from "next/link";
 import UpdateMileageModal from "@/components/modals/updateMileageModal";
 import AddVehicleModal from "@/components/modals/addVehicleModal";
+import UpdateOwnerDataModal from "@/components/modals/updateOwnerDataModal";
 import { chainsMap, defaultChain } from "@/constants/chains";
 import InvalidNetwork from "@/components/invalidNetwork";
+import {createToken} from "@/utils/createToken";
 
 interface Owner {
   address: string;
@@ -33,6 +35,8 @@ export default function OwnerPage() {
   const [mileageToUpdate, setMileageToUpdate] = useState(0);
   const [showMileageModal, setShowMileageModal] = useState(false);
   const [showAddVehicleModal, setShowAddVehicleModal] = useState(false);
+  const [showUpdateOwnerDataModal, setShowUpdateOwnerDataModal] = useState(false);
+  const [addressOwner, setAddressOwner] = useState("");
 
   const { chainId: chainIdHex } = useMoralis();
   const chainId = chainIdHex ? parseInt(chainIdHex) : defaultChain;
@@ -85,6 +89,21 @@ export default function OwnerPage() {
                   <AddVehicleModal
                     showModal={showAddVehicleModal}
                     setShowModal={setShowAddVehicleModal}
+                  />
+                  <button
+                    className="text-xl pb-1 pt-6 font-bold"
+                    onClick={() => {
+                      setShowUpdateOwnerDataModal(true);
+                      setAddressOwner(address!.toString());
+                    }}
+                  >
+                    Update data
+                  </button>
+                  <UpdateOwnerDataModal
+                    addressOwner={addressOwner}
+                    setAddressOwner={setAddressOwner}
+                    showModal={showUpdateOwnerDataModal}
+                    setShowModal={setShowUpdateOwnerDataModal}
                   />
                 </>
               ) : null}

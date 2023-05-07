@@ -1,5 +1,6 @@
 import Layout from "@/components/layout/layout";
 import SearchBar from "@/components/searchBar";
+import { createToken } from "@/utils/createToken";
 
 export default function Home() {
   return (
