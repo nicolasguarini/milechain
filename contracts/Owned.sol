@@ -1,6 +1,11 @@
 // SPDX-License-Identifier: GNU
 pragma solidity ^0.8.18;
 
+/* Errors */
+error Unauthorized();
+error NotADeployer();
+error AlreadyADeployer();
+
 /**
  * A contract to manage contract ownership and safe mode
  * @title Owned
@@ -17,8 +22,9 @@ contract Owned {
      * @dev Define modifier to grant access only to deployers
      */
     modifier onlyDeployers() {
-        require(_deployers[msg.sender], "You have to be a deployer to do this");
-
+        if (_deployers[msg.sender] != true) {
+            revert Unauthorized();
+        }
         _;
     }
 
@@ -49,10 +55,9 @@ contract Owned {
      * @param newDeployer The new deployer's address
      */
     function addDeployer(address newDeployer) public onlyDeployers {
-        require(
-            !_deployers[newDeployer],
-            "The specified address is already a deployer"
-        );
+        if (_deployers[newDeployer]) {
+            revert AlreadyADeployer();
+        }
 
         _deployers[newDeployer] = true;
     }
@@ -62,10 +67,9 @@ contract Owned {
      * @param deployer The deployer's address which needs to be removed
      */
     function deleteDeployer(address deployer) public onlyDeployers {
-        require(
-            _deployers[deployer],
-            "The specified address is not a deployer"
-        );
+        if (_deployers[deployer] != true) {
+            revert NotADeployer();
+        }
 
         _deployers[deployer] = false;
     }

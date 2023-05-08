@@ -3,6 +3,13 @@ pragma solidity ^0.8.18;
 
 import "./Owned.sol";
 
+/* Errors */
+error VehicleAlreadyExists();
+error SafeModeEnabled();
+error VehicleNotFound();
+error VehicleOfAnotherOwner();
+error InvalidMileage();
+
 /**
  * A contract for keeping track of mileage records for _vehicles.
  * @title MileChain
@@ -53,14 +60,12 @@ contract MileChain is Owned {
      * @param mileage The initial mileage of the vehicle
      */
     function addVehicle(string memory licensePlate, uint256 mileage) public {
-        require(
-            _vehicles[licensePlate].owner == address(0),
-            "Vehicle already exists"
-        );
-        require(
-            !_safeMode,
-            "Contract is in read-only mode for security reasons"
-        );
+        if (_vehicles[licensePlate].owner != address(0)) {
+            revert VehicleAlreadyExists();
+        }
+        if (_safeMode) {
+            revert SafeModeEnabled();
+        }
 
         _vehicles[licensePlate] = Vehicle(licensePlate, msg.sender, mileage);
         _mileageRecords[licensePlate].push(
@@ -77,18 +82,18 @@ contract MileChain is Owned {
      * @param mileage The new mileage of the vehicle
      */
     function updateMileage(string memory licensePlate, uint256 mileage) public {
-        require(
-            _vehicles[licensePlate].owner == msg.sender,
-            "You do not own this vehicle"
-        );
-        require(
-            mileage > _vehicles[licensePlate].mileage,
-            "New mileage must be greater than current mileage"
-        );
-        require(
-            !_safeMode,
-            "Contract is in read-only mode for security reasons"
-        );
+        if (_vehicles[licensePlate].owner == address(0)) {
+            revert VehicleNotFound();
+        }
+        if (_vehicles[licensePlate].owner != msg.sender) {
+            revert VehicleOfAnotherOwner();
+        }
+        if (mileage <= _vehicles[licensePlate].mileage) {
+            revert InvalidMileage();
+        }
+        if (_safeMode) {
+            revert SafeModeEnabled();
+        }
 
         _vehicles[licensePlate].mileage = mileage;
         _mileageRecords[licensePlate].push(
@@ -102,18 +107,15 @@ contract MileChain is Owned {
      * @param newOwner The new owner of the vehicle
      */
     function changeOwner(string memory licensePlate, address newOwner) public {
-        require(
-            _vehicles[licensePlate].owner != address(0),
-            "Vehicle not found"
-        );
-        require(
-            _vehicles[licensePlate].owner == msg.sender,
-            "You do not own this vehicle"
-        );
-        require(
-            !_safeMode,
-            "Contract is in read-only mode for security reasons"
-        );
+        if (_vehicles[licensePlate].owner == address(0)) {
+            revert VehicleNotFound();
+        }
+        if (_vehicles[licensePlate].owner != msg.sender) {
+            revert VehicleOfAnotherOwner();
+        }
+        if (_safeMode) {
+            revert SafeModeEnabled();
+        }
 
         _vehicles[licensePlate].owner = newOwner;
         _ownersRecords[licensePlate].push(
@@ -129,10 +131,9 @@ contract MileChain is Owned {
     function getVehicle(
         string memory licensePlate
     ) public view returns (Vehicle memory) {
-        require(
-            _vehicles[licensePlate].owner != address(0),
-            "Vehicle not found"
-        );
+        if (_vehicles[licensePlate].owner == address(0)) {
+            revert VehicleNotFound();
+        }
 
         return _vehicles[licensePlate];
     }
@@ -145,10 +146,9 @@ contract MileChain is Owned {
     function getMileageRecords(
         string memory licensePlate
     ) public view returns (MileageRecord[] memory) {
-        require(
-            _vehicles[licensePlate].owner != address(0),
-            "Vehicle not found"
-        );
+        if (_vehicles[licensePlate].owner == address(0)) {
+            revert VehicleNotFound();
+        }
 
         return _mileageRecords[licensePlate];
     }
@@ -161,10 +161,9 @@ contract MileChain is Owned {
     function getOwnersRecords(
         string memory licensePlate
     ) public view returns (OwnersRecord[] memory) {
-        require(
-            _vehicles[licensePlate].owner != address(0),
-            "Vehicle not found"
-        );
+        if (_vehicles[licensePlate].owner == address(0)) {
+            revert VehicleNotFound();
+        }
 
         return _ownersRecords[licensePlate];
     }
