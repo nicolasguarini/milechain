@@ -7,6 +7,7 @@
   },
   "dependencies": {
     "@netlify/functions": "^1.4.0",
+    "crypto-js": "^4.1.1",
     "mongodb": "^5.2.0",
     "web3": "^1.9.0"
   }
