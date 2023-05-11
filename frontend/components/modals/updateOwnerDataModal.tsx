@@ -13,7 +13,6 @@ interface Props {
 
 export default function UpdateOwnerDataModal(props: Props) {
     const baseUrl = process.env.NEXT_PUBLIC_SERVER_BASE_URL;
-    const token = createToken();
     const { chainId: chainIdHex, isWeb3Enabled } = useMoralis();
     const chainId = chainIdHex ? parseInt(chainIdHex) : 0;
     const contractAddress = require("../../constants/addresses.json")[
@@ -29,15 +28,17 @@ export default function UpdateOwnerDataModal(props: Props) {
         if (isWeb3Enabled) return;
     }, [isWeb3Enabled]);
 
-    const handleSuccess = async (tx: any) => {
+    const updateDataDb = async () => {
+        const token = createToken(props.addressOwner);
         try {
             await fetch(
-                `${baseUrl}updateOwnerOwnerData?name=${newName}&bio=${newBio}&address=${props.addressOwner}`,
+                `${baseUrl}updateOwnerData?chainId=${chainId}&name=${newName}&bio=${newBio}&address=${props.addressOwner}&token=${token}`,
                 {
-                    method: "GET",
-                    headers: {
-                        "token": token
-                    }
+                    method: "GET"
+                }).then((res) => res.json())
+                .then((data) => {
+                    Notify.success("Database updated!");
+                    console.log("Server response: " + data);
                 });
         } catch (e) {
             console.log(e);
@@ -52,7 +53,7 @@ export default function UpdateOwnerDataModal(props: Props) {
 
     const handleClick = async () => {
         setModalLoading(true);
-        handleSuccess;
+        updateDataDb();
     };
 
     return (
