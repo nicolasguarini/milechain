@@ -1,6 +1,6 @@
 import fs from "fs";
 
-const NUM_VEHICLES = 100;
+const NUM_VEHICLES = 1000;
 const MIN_UPDATES = 2;
 const MAX_UPDATES = 10;
 const MIN_INCREMENT = 100;
