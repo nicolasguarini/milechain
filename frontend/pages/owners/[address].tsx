@@ -46,6 +46,12 @@ export default function OwnerPage() {
   const url = `${baseUrl}getVehiclesByOwner?chainId=${chainId}&address=${address}`;
   const { data, error } = useSWR(url, fetcher);
 
+  const urlOwner = `${baseUrl}getInformations?chainId=${chainId}&address=${address}`
+  const { data: dataOwner, error: errorOwner } = useSWR(urlOwner, fetcher);
+
+  const username = dataOwner?.name;
+  const bio = dataOwner?.bio;
+
   useEffect(() => {
     if (isWeb3Enabled) {
     }
@@ -65,8 +71,14 @@ export default function OwnerPage() {
     <Layout>
       <Container>
         <h1 className="text-4xl font-bold text-center pt-6 border-b-2 pb-1 border-accent w-fit m-auto">
-          {address}
+          {username}
         </h1>
+        <h3 className="text-4xl font-bold text-center pt-6 border-b-2 pb-1 border-accent w-fit m-auto">
+          {address}
+        </h3>
+        <p className="text-2xl font-bold text-center pt-6 pb-1 border-accent w-fit m-auto">
+          {bio}
+        </p>
         {!data ? (
           <div>Loading...</div>
         ) : error ? (
