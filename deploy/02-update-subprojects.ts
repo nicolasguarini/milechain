@@ -1,18 +1,15 @@
 import { HardhatRuntimeEnvironment } from "hardhat/types";
-import { developmentChains } from "../hardhat.config";
 
 const updateSubprojects = async function (hre: HardhatRuntimeEnvironment) {
   const { network } = hre;
-  if (!developmentChains.includes(network.name)) {
-    const chainId: string = network.config.chainId!.toString();
-    const networkName: string = network.name;
-    const milechain = require(`../deployments/${networkName}/MileChain.json`);
-    const address: string = milechain.address;
-    const abi = milechain.abi;
+  const chainId: string = network.config.chainId!.toString();
+  const networkName: string = network.name;
+  const milechain = require(`../deployments/${networkName}/MileChain.json`);
+  const address: string = milechain.address;
+  const abi = milechain.abi;
 
-    updateFrontend(chainId, address, abi);
-    updateBackend(chainId, address, abi);
-  }
+  updateFrontend(chainId, address, abi);
+  updateBackend(chainId, address, abi);
 };
 
 async function updateFrontend(chainId: string, address: string, abi: any) {
