@@ -12,7 +12,7 @@ export async function writeToCSV(filename: string, data: any[]) {
 }
 
 export async function writeToExtendedCSV(filename: string, data: any[]) {
-  let csvContent = "thread,action,start,end";
+  let csvContent = "thread,action,start,end\n";
 
   for (const item of data) {
     const csvRow = `${item.thread},${item.action},${item.start},${item.end}\n`;
