@@ -10,3 +10,14 @@ export async function writeToCSV(filename: string, data: any[]) {
 
   await appendFile(filename, csvContent);
 }
+
+export async function writeToExtendedCSV(filename: string, data: any[]) {
+  let csvContent = "thread,action,start,end";
+
+  for (const item of data) {
+    const csvRow = `${item.thread},${item.action},${item.start},${item.end}\n`;
+    csvContent += csvRow;
+  }
+
+  await appendFile(filename, csvContent);
+}
