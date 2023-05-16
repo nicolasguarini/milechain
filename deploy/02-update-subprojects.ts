@@ -3,7 +3,10 @@ import { HardhatRuntimeEnvironment } from "hardhat/types";
 const updateSubprojects = async function (hre: HardhatRuntimeEnvironment) {
   const { network } = hre;
   const chainId: string = network.config.chainId!.toString();
-  const networkName: string = network.name;
+  let networkName: string = network.name;
+
+  if (networkName == "hardhat") networkName = "localhost";
+
   const milechain = require(`../deployments/${networkName}/MileChain.json`);
   const address: string = milechain.address;
   const abi = milechain.abi;
