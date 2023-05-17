@@ -49,8 +49,11 @@ export default function OwnerPage() {
   const urlOwner = `${baseUrl}getInformations?chainId=${chainId}&address=${address}`
   const { data: dataOwner, error: errorOwner } = useSWR(urlOwner, fetcher);
 
-  const username = dataOwner?.name;
-  const bio = dataOwner?.bio;
+  const username = dataOwner?.user.name;
+  const bio = dataOwner?.user.bio;
+ 
+  console.log(dataOwner);
+
 
   useEffect(() => {
     if (isWeb3Enabled) {

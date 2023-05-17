@@ -1,23 +1,23 @@
 import { Handler, HandlerContext, HandlerEvent } from "@netlify/functions";
-import { log } from "console";
 import { Db, MongoClient } from "mongodb";
-import {checkToken} from "../utils/checkToken";
 import { chainsMap } from "../constants/chains";
 
 const mongoClient: MongoClient = new MongoClient(process.env.DB_CONN_STRING!);
 const clientPromise = mongoClient.connect();
 
+
 const handler: Handler = async ( event: HandlerEvent, context: HandlerContext ) => {
-    console.log("ciao")
     if(event.httpMethod=="GET"){
         const address: string = event.queryStringParameters!.address!;
         const chainId: number = parseInt(event.queryStringParameters!.chainId!);
         const networkName = chainsMap.get(chainId);
         try{
+            console.log(address)
             const db = (await clientPromise).db(`milechain-${networkName}`);
             const user: any = await db.collection("owners").findOne({
-                address: address,
+                address: { $regex: `${address}`, $options: "i" },
             });
+            console.log(user)
             return {
                 statusCode: 200,
                 body: JSON.stringify({ user: user }),
@@ -44,3 +44,5 @@ const handler: Handler = async ( event: HandlerEvent, context: HandlerContext ) 
     }
 
 }
+
+export { handler };
