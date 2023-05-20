@@ -52,7 +52,7 @@ export default function Chart(props: Props) {
       },
       title: {
         display: true,
-        text: "Chart.js Line Chart",
+        text: "Mileages Historical",
       },
     },
     scales: {

@@ -7,22 +7,8 @@ import ChangeOwnerModal from "@/components/modals/changeOwnerModal";
 import InvalidNetwork from "@/components/invalidNetwork";
 import Chart from "@/components/chart";
 import Spinner from "@/components/spinner";
-
-interface Vehicle {
-  licensePlate: string;
-  mileage: number;
-  owner: string;
-}
-
-interface MileageRecord {
-  mileage: number;
-  timestamp: number;
-}
-
-interface OwnersRecord {
-  owner: string;
-  timestamp: number;
-}
+import UpdateMileageModal from "@/components/modals/updateMileageModal";
+import { Vehicle, Record, MileageRecord, OwnersRecord } from "@/utils/types";
 
 export default function VehiclePage() {
   const router = useRouter();
@@ -35,11 +21,13 @@ export default function VehiclePage() {
   const abi = require("../../constants/abi.json");
 
   const [vehicle, setVehicle] = useState<Vehicle>();
-  const [mileageRecords, setMileageRecords] = useState<MileageRecord[]>([]);
   const [showChangeOwner, setShowChangeOwner] = useState(false);
+  const [showMileageModal, setShowMileageModal] = useState(false);
+  const [licensePlateToUpdate, setLicensePlateToUpdate] = useState("");
+  const [mileageToUpdate, setMileageToUpdate] = useState(0);
   const [mileages, setMileages] = useState<number[]>([]);
   const [timestamps, setTimestamps] = useState<number[]>([]);
-  const [ownersRecords, setOwnersRecords] = useState<OwnersRecord[]>([]);
+  const [records, setRecords] = useState<Record[]>([]);
 
   const {
     runContractFunction: getVehicle,
@@ -77,13 +65,16 @@ export default function VehiclePage() {
     const timestamps = mileageRecords.map(
       (mileageRecord) => mileageRecord.timestamp
     );
-    console.log(mileages);
-    console.log(timestamps);
+
     setMileages(mileages);
     setTimestamps(timestamps);
     setVehicle(vehicle);
-    setMileageRecords(mileageRecords);
-    setOwnersRecords(ownersRecords);
+
+    const combinedRecords: Record[] = [...mileageRecords, ...ownersRecords];
+    const sortedRecords = combinedRecords.sort(
+      (a, b) => a.timestamp - b.timestamp
+    );
+    setRecords(sortedRecords);
   }
 
   useEffect(() => {
@@ -95,13 +86,26 @@ export default function VehiclePage() {
   return (
     <Layout>
       <Container>
-        <h1 className="text-4xl font-bold text-center pt-6 border-b-2 pb-1 border-accent w-fit m-auto">
-          {licensePlate}
-        </h1>
-
         {isWeb3Enabled ? (
-          <div className="mt-12 flex flex-row justify-center">
-            {contractAddress ? (
+          <div className="pt-20">
+            <div className="flex flex-row justify-between">
+              <div>
+                <h1 className="text-4xl font-bold border-b-2 pb-1 border-accent w-fit m-auto">
+                  {licensePlate}
+                </h1>
+              </div>
+              <div>
+                <h2 className="text-2xl text-right">
+                  Current Mileage: {vehicle?.mileage.toString()} km
+                </h2>
+                <h2 className="text-2xl text-right">
+                  Owned by:{" "}
+                  <span className="underline">{vehicle?.owner.toString()}</span>
+                </h2>
+              </div>
+            </div>
+
+            {contractAddress && licensePlate && vehicle ? (
               <div>
                 {isLoading || isFetching ? (
                   <Spinner />
@@ -109,9 +113,9 @@ export default function VehiclePage() {
                   <div>
                     {account?.toLowerCase() ==
                     vehicle?.owner.toString().toLowerCase() ? (
-                      <>
+                      <div className="flex flex-row justify-center gap-10 my-10">
                         <button
-                          className="text-xl pb-1 pt-6 font-bold"
+                          className="border block border-accent px-9 py-2 rounded-full "
                           onClick={() => {
                             setShowChangeOwner(true);
                           }}
@@ -119,58 +123,94 @@ export default function VehiclePage() {
                           Change owner
                         </button>
 
+                        <button
+                          className="border block border-accent px-9 py-2 rounded-full "
+                          onClick={() => {
+                            setLicensePlateToUpdate(licensePlate.toString());
+                            setMileageToUpdate(
+                              parseInt(vehicle.mileage.toString())
+                            );
+                            setShowMileageModal(true);
+                          }}
+                        >
+                          Update Mileage
+                        </button>
+
                         <ChangeOwnerModal
                           showModal={showChangeOwner}
                           setShowModal={setShowChangeOwner}
                           licensePlate={licensePlate!.toString()}
                         />
-                      </>
-                    ) : null}
-                    <h1 className="text-3xl font-bold">
-                      LICENSE PLATE: {vehicle?.licensePlate}
-                    </h1>
-                    <h2 className="text-2xl">
-                      MILEAGE: {vehicle?.mileage.toString()}
-                    </h2>
-                    <h2 className="text-2xl">
-                      OWNER: {vehicle?.owner.toString()}
-                    </h2>
-                    <Chart mileages={mileages} timestamps={timestamps} />
-                    <h1 className="text-3xl font-bold">MILEAGE RECORDS:</h1>
-                    {mileageRecords?.map((mileageRecord: MileageRecord) => {
-                      return (
-                        <div key={mileageRecord.timestamp.toString()}>
-                          <h2 className="text-2xl">
-                            MILEAGE: {mileageRecord.mileage.toString()}
-                          </h2>
-                          <h2 className="text-2xl">
-                            TIMESTAMP:{" "}
-                            {new Date(
-                              mileageRecord.timestamp * 1000
-                            ).toLocaleString("it")}
-                          </h2>
-                        </div>
-                      );
-                    })}
 
-                    <h1 className="text-3xl font-bold mt-12">
-                      OWNERS RECORDS:
-                    </h1>
-                    {ownersRecords?.map((ownersRecord: OwnersRecord) => {
-                      return (
-                        <div key={ownersRecord.timestamp.toString()}>
-                          <h2 className="text-2xl">
-                            Owner: {ownersRecord.owner}
-                          </h2>
-                          <h2 className="text-2xl">
-                            TIMESTAMP:{" "}
-                            {new Date(
-                              ownersRecord.timestamp * 1000
-                            ).toLocaleString("it")}
-                          </h2>
-                        </div>
-                      );
-                    })}
+                        <UpdateMileageModal
+                          showModal={showMileageModal}
+                          setShowModal={setShowMileageModal}
+                          licensePlateToUpdate={licensePlateToUpdate}
+                          setLicensePlateToUpdate={setLicensePlateToUpdate}
+                          mileageToUpdate={mileageToUpdate}
+                          setMileageToUpdate={setMileageToUpdate}
+                        />
+                      </div>
+                    ) : null}
+
+                    <div className="max-w-4xl m-auto mt-14">
+                      <Chart mileages={mileages} timestamps={timestamps} />
+                    </div>
+
+                    <div className="mt-16">
+                      <h1 className="text-4xl font-bold border-b-2 pb-1 border-accent w-fit m-auto">
+                        Vehicle Timeline
+                      </h1>
+
+                      <ol className="relative border-l border-primary-darker max-w-4xl m-auto mt-8 mb-8">
+                        {records?.map((record: Record) => {
+                          if ("mileage" in record) {
+                            return (
+                              <li className="mb-10 ml-4" key={record.timestamp}>
+                                <div className="absolute w-3 h-3 rounded-full mt-1.5 -left-1.5 bg-primary-darker"></div>
+                                <time className="mb-1 text-sm font-normal leading-none opacity-60">
+                                  {new Date(
+                                    record.timestamp * 1000
+                                  ).toLocaleString("it")}
+                                </time>
+                                <h3 className="text-xl font-bold">
+                                  {record.mileage.toString()} km
+                                </h3>
+                                <p className="mb-4 text-base font-normal opacity-70">
+                                  Get access to over 20+ pages including a
+                                  dashboard layout, charts, kanban board,
+                                  calendar, and pre-order E-commerce & Marketing
+                                  pages.
+                                </p>
+                              </li>
+                            );
+                          } else {
+                            return (
+                              <li
+                                className="mb-10 ml-4"
+                                key={record.timestamp + 1}
+                              >
+                                <div className="absolute w-3 h-3 rounded-full mt-1.5 -left-1.5 bg-primary-darker"></div>
+                                <time className="mb-1 text-sm font-normal leading-none opacity-60">
+                                  {new Date(
+                                    record.timestamp * 1000
+                                  ).toLocaleString("it")}
+                                </time>
+                                <h3 className="text-xl font-bold">
+                                  Owner changed to {record.owner.toString()}
+                                </h3>
+                                <p className="mb-4 text-base font-normal opacity-70">
+                                  Get access to over 20+ pages including a
+                                  dashboard layout, charts, kanban board,
+                                  calendar, and pre-order E-commerce & Marketing
+                                  pages.
+                                </p>
+                              </li>
+                            );
+                          }
+                        })}
+                      </ol>
+                    </div>
                   </div>
                 )}
               </div>

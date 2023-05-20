@@ -10,19 +10,7 @@ import AddVehicleModal from "@/components/modals/addVehicleModal";
 import UpdateOwnerDataModal from "@/components/modals/updateOwnerDataModal";
 import { chainsMap, defaultChain } from "@/constants/chains";
 import InvalidNetwork from "@/components/invalidNetwork";
-import {createToken} from "@/utils/createToken";
-
-interface Owner {
-  address: string;
-  name: string;
-  surname: string;
-}
-
-interface Vehicle {
-  licensePlate: string;
-  mileage: number;
-  owner: string;
-}
+import { Vehicle } from "@/utils/types";
 
 const fetcher = (apiURL: string) => fetch(apiURL).then((res) => res.json());
 
@@ -35,7 +23,8 @@ export default function OwnerPage() {
   const [mileageToUpdate, setMileageToUpdate] = useState(0);
   const [showMileageModal, setShowMileageModal] = useState(false);
   const [showAddVehicleModal, setShowAddVehicleModal] = useState(false);
-  const [showUpdateOwnerDataModal, setShowUpdateOwnerDataModal] = useState(false);
+  const [showUpdateOwnerDataModal, setShowUpdateOwnerDataModal] =
+    useState(false);
   const [addressOwner, setAddressOwner] = useState("");
 
   const { chainId: chainIdHex } = useMoralis();
@@ -46,14 +35,11 @@ export default function OwnerPage() {
   const url = `${baseUrl}getVehiclesByOwner?chainId=${chainId}&address=${address}`;
   const { data, error } = useSWR(url, fetcher);
 
-  const urlOwner = `${baseUrl}getInformations?chainId=${chainId}&address=${address}`
+  const urlOwner = `${baseUrl}getOwner?chainId=${chainId}&address=${address}`;
   const { data: dataOwner, error: errorOwner } = useSWR(urlOwner, fetcher);
 
-  const username = dataOwner?.user.name;
-  const bio = dataOwner?.user.bio;
- 
-  console.log(dataOwner);
-
+  const username: string | null = dataOwner?.user?.name;
+  const bio: string | null = dataOwner?.user?.bio;
 
   useEffect(() => {
     if (isWeb3Enabled) {
