@@ -32,7 +32,7 @@ const handler: Handler = async (
           .collection("vehicles")
           .find({
             licensePlate: { $regex: `${query}`, $options: "i" },
-          })
+          }).limit(50)
           .toArray();
         console.log(vehicles);
         return {

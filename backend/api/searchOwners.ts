@@ -32,7 +32,7 @@ const handler: Handler = async (
           .collection("owners")
           .find({
             address: { $regex: `${query}`, $options: "i" },
-          })
+          }).limit(50)
           .toArray();
 
         return {
