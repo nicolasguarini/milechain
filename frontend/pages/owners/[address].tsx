@@ -59,99 +59,119 @@ export default function OwnerPage() {
   return (
     <Layout>
       <Container>
-        <h1 className="text-4xl font-bold text-center pt-6 border-b-2 pb-1 border-accent w-fit m-auto">
-          {username}
-        </h1>
-        <h3 className="text-4xl font-bold text-center pt-6 border-b-2 pb-1 border-accent w-fit m-auto">
-          {address}
-        </h3>
-        <p className="text-2xl font-bold text-center pt-6 pb-1 border-accent w-fit m-auto">
-          {bio}
-        </p>
         {!data ? (
           <div>Loading...</div>
         ) : error ? (
           <div>Failed to load</div>
         ) : (
-          <div className="flex flex-col items-center">
-            <div className="flex flex-col items-center">
-              {isWeb3Enabled &&
-              account?.toLowerCase() == address?.toString().toLowerCase() ? (
-                <>
-                  <button
-                    className="text-xl pb-1 pt-6 font-bold"
-                    onClick={() => {
-                      setShowAddVehicleModal(true);
-                    }}
-                  >
-                    Add Vehicle
-                  </button>
+          <div className="">
+            <div className="flex flex-row justify-between mb-16">
+              <div className="flex flex-col content-start">
+                <div className="text-left w-fit">
+                  <h1 className="text-4xl font-bold text-left pt-6 border-b-2 pb-1 w-fit border-accent m-auto">
+                    {username}
+                  </h1>
+                </div>
 
-                  <AddVehicleModal
-                    showModal={showAddVehicleModal}
-                    setShowModal={setShowAddVehicleModal}
-                  />
-                  <button
-                    className="text-xl pb-1 pt-6 font-bold"
-                    onClick={() => {
-                      setShowUpdateOwnerDataModal(true);
-                      setAddressOwner(address!.toString());
-                    }}
-                  >
-                    Update data
-                  </button>
-                  <UpdateOwnerDataModal
-                    addressOwner={addressOwner}
-                    setAddressOwner={setAddressOwner}
-                    showModal={showUpdateOwnerDataModal}
-                    setShowModal={setShowUpdateOwnerDataModal}
-                  />
-                </>
-              ) : null}
-              <h1>Vehicles</h1>
-              {data?.vehicles?.map((vehicle: Vehicle) => {
-                return (
-                  <div
-                    className="flex flex-row gap-20 items-center"
-                    key={vehicle.licensePlate}
-                  >
-                    <Link href={`/vehicles/${vehicle.licensePlate}`}>
-                      <div className="text-2xl font-bold text-center pt-6 border-b-2 pb-1 border-accent w-fit m-auto">
-                        {vehicle.licensePlate}
-                      </div>
-                    </Link>
-                    <p className="text-2xl font-bold text-center pt-6 pb-1 border-accent w-fit m-auto">
-                      Mileage: {vehicle.mileage}
-                    </p>
+                <p className="text-xl p-0 m-0 font-medium text-center pt-3 pb-1 border-accent w-fit">
+                  {bio}
+                </p>
+              </div>
 
-                    {isWeb3Enabled &&
-                    account?.toLowerCase() == vehicle.owner.toLowerCase() ? (
-                      <div>
-                        <button
-                          className="text-xl pb-1 pt-6 font-bold"
-                          onClick={() => {
-                            setShowMileageModal(true);
-                            setLicensePlateToUpdate(vehicle.licensePlate);
-                            setMileageToUpdate(vehicle.mileage);
-                          }}
-                        >
-                          Update mileage
-                        </button>
+              <div>
+                <div>
+                  <h3 className="text-xl font-bold text-center pt-6 pb-1 m-auto">
+                    {address}
+                  </h3>
+                </div>
+                {isWeb3Enabled &&
+                account?.toLowerCase() == address?.toString().toLowerCase() ? (
+                  <div className="flex flex-row gap-6 justify-end pt-3">
+                    <button
+                      className="border block border-accent px-9 py-2 rounded-full"
+                      onClick={() => {
+                        setShowAddVehicleModal(true);
+                      }}
+                    >
+                      Add Vehicle
+                    </button>
 
-                        <UpdateMileageModal
-                          showModal={showMileageModal}
-                          setShowModal={setShowMileageModal}
-                          licensePlateToUpdate={licensePlateToUpdate}
-                          setLicensePlateToUpdate={setLicensePlateToUpdate}
-                          mileageToUpdate={mileageToUpdate}
-                          setMileageToUpdate={setMileageToUpdate}
-                        />
-                      </div>
-                    ) : null}
+                    <AddVehicleModal
+                      showModal={showAddVehicleModal}
+                      setShowModal={setShowAddVehicleModal}
+                    />
+                    <button
+                      className="border block border-accent px-9 py-2 rounded-full"
+                      onClick={() => {
+                        setShowUpdateOwnerDataModal(true);
+                        setAddressOwner(address!.toString());
+                      }}
+                    >
+                      Update data
+                    </button>
+                    <UpdateOwnerDataModal
+                      addressOwner={addressOwner}
+                      setAddressOwner={setAddressOwner}
+                      showModal={showUpdateOwnerDataModal}
+                      setShowModal={setShowUpdateOwnerDataModal}
+                    />
                   </div>
-                );
-              })}
+                ) : null}
+              </div>
             </div>
+
+            {data?.vehicles ? (
+              <div className="max-w-3xl m-auto">
+                <div className="text-center mb-4">
+                  <h1 className="text-4xl font-bold border-b-2 pb-1 border-accent w-fit m-auto">
+                    Vehicles
+                  </h1>
+                </div>
+
+                {data?.vehicles?.map((vehicle: Vehicle) => {
+                  return (
+                    <div
+                      className="flex flex-row gap-20 items-center mb-3"
+                      key={vehicle.licensePlate}
+                    >
+                      <Link href={`/vehicles/${vehicle.licensePlate}`}>
+                        <div className="text-2xl font-bold text-center pt-6 border-b-2   pb-0 border-accent w-fit m-auto">
+                          {vehicle.licensePlate}
+                        </div>
+                      </Link>
+                      <p className="text-xl font-medium text-center pt-6 pb-1 border-accent w-fit m-auto">
+                        {vehicle.mileage} km
+                      </p>
+
+                      {isWeb3Enabled &&
+                      account?.toLowerCase() == vehicle.owner.toLowerCase() ? (
+                        <div>
+                          <button
+                            className="border block border-accent px-9 py-2 rounded-full"
+                            onClick={() => {
+                              setShowMileageModal(true);
+                              setLicensePlateToUpdate(vehicle.licensePlate);
+                              setMileageToUpdate(vehicle.mileage);
+                            }}
+                          >
+                            Update mileage
+                          </button>
+
+                          <UpdateMileageModal
+                            showModal={showMileageModal}
+                            setShowModal={setShowMileageModal}
+                            licensePlateToUpdate={licensePlateToUpdate}
+                            setLicensePlateToUpdate={setLicensePlateToUpdate}
+                            mileageToUpdate={mileageToUpdate}
+                            setMileageToUpdate={setMileageToUpdate}
+                          />
+                        </div>
+                      ) : null}
+                    </div>
+                  );
+                })}
+              </div>
+            ) : null}
           </div>
         )}
       </Container>
