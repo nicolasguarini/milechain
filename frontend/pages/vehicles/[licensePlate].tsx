@@ -9,6 +9,7 @@ import Chart from "@/components/chart";
 import Spinner from "@/components/spinner";
 import UpdateMileageModal from "@/components/modals/updateMileageModal";
 import { Vehicle, Record, MileageRecord, OwnersRecord } from "@/utils/types";
+import { chainsMap } from "@/constants/chains";
 
 export default function VehiclePage() {
   const router = useRouter();

@@ -68,21 +68,31 @@ export default function OwnerPage() {
             <div className="flex flex-row justify-between mb-16">
               <div className="flex flex-col content-start">
                 <div className="text-left w-fit">
-                  <h1 className="text-4xl font-bold text-left pt-6 border-b-2 pb-1 w-fit border-accent m-auto">
-                    {username}
-                  </h1>
+                  {username ? (
+                    <h1 className="text-4xl font-bold text-left pt-6 border-b-2 w-fit border-accent m-auto">
+                      {username}
+                    </h1>
+                  ) : (
+                    <h1 className="text-2xl font-bold text-left pt-2 border-b-2  w-fit border-accent m-auto">
+                      {address}
+                    </h1>
+                  )}
                 </div>
 
-                <p className="text-xl p-0 m-0 font-medium text-center pt-3 pb-1 border-accent w-fit">
-                  {bio}
-                </p>
+                {bio ? (
+                  <p className="text-xl p-0 m-0 font-medium text-center pt-3 pb-1 border-accent w-fit">
+                    {bio}
+                  </p>
+                ) : null}
               </div>
 
               <div>
                 <div>
-                  <h3 className="text-xl font-bold text-center pt-6 pb-1 m-auto">
-                    {address}
-                  </h3>
+                  {username ? (
+                    <h3 className="text-xl font-bold text-center pt-6 pb-1 m-auto">
+                      {address}
+                    </h3>
+                  ) : null}
                 </div>
                 {isWeb3Enabled &&
                 account?.toLowerCase() == address?.toString().toLowerCase() ? (
@@ -121,7 +131,7 @@ export default function OwnerPage() {
             </div>
 
             {data?.vehicles ? (
-              <div className="max-w-3xl m-auto">
+              <div className="max-w-2xl m-auto">
                 <div className="text-center mb-4">
                   <h1 className="text-4xl font-bold border-b-2 pb-1 border-accent w-fit m-auto">
                     Vehicles
@@ -131,15 +141,15 @@ export default function OwnerPage() {
                 {data?.vehicles?.map((vehicle: Vehicle) => {
                   return (
                     <div
-                      className="flex flex-row gap-20 items-center mb-3"
+                      className="flex flex-row gap-20 items-center mb-3 justify-between"
                       key={vehicle.licensePlate}
                     >
                       <Link href={`/vehicles/${vehicle.licensePlate}`}>
-                        <div className="text-2xl font-bold text-center pt-6 border-b-2   pb-0 border-accent w-fit m-auto">
+                        <div className="text-2xl font-bold text-center pt-6 border-b-2   pb-0 border-accent w-fit ">
                           {vehicle.licensePlate}
                         </div>
                       </Link>
-                      <p className="text-xl font-medium text-center pt-6 pb-1 border-accent w-fit m-auto">
+                      <p className="text-xl font-medium text-center pt-6 pb-1 border-accent w-fit ">
                         {vehicle.mileage} km
                       </p>
 
