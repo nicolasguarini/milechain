@@ -4,6 +4,7 @@ import { chainsMap, defaultChain } from "@/constants/chains";
 import { Notify } from "notiflix";
 import { FormEvent, useState } from "react";
 import { useMoralis } from "react-moralis";
+import Link from "next/link";
 
 interface Vehicle {
   licensePlate: string;
@@ -106,19 +107,37 @@ export default function AdvancedSearchPage() {
 
         <div>
           {vehicle ? (
-            <div className="text-xl font-bold flex flex-row justify-between">
-              <div>
-                {vehicle.licensePlate} - {vehicle.mileage}km
-              </div>
-
-              <button className="block" onClick={handleCheckBlockchainClick}>
-                Update from blockchain
-              </button>
-            </div>
+            
+             <div className="flex flex-row justify-between items-center">
+                      <div className="items-center">
+                        <h1 className="text-4xl font-bold border-b-2 pb-1 border-accent w-fit m-auto">
+                          <Link href={`/vehicles/${vehicle.licensePlate}`}>
+                            {vehicle.licensePlate}
+                          </Link>
+                        </h1>
+                      </div>
+                      <div>
+                      <button className="block" onClick={handleCheckBlockchainClick}>
+                          Update from blockchain
+                        </button>
+                      </div>
+                      <div className="flex flex-col items-right">
+                        <p className="text-xl text-right">
+                          Current Mileage: {vehicle.mileage} km
+                        </p>
+                        <p className="text-xl text-right border-b-2">
+                          <Link href={`/owners/${vehicle.owner}`}>
+                          Owned by:{vehicle.owner.substring(0,6)+"..."+vehicle.owner.substring(vehicle.owner.length-5,vehicle.owner.length)}
+                          </Link>
+                        </p>
+                       
+                      </div>
+                    </div>
+             
           ) : (
-            <div className="text-xl font-bold">
+            <div className=" flex flex-col items-center text-xl font-bold">
               <h3>Vehicle Not Found in db</h3>
-              <button className="block" onClick={handleCheckBlockchainClick}>
+              <button className="border block border-accent px-9 py-2 rounded-full mt-10" onClick={handleCheckBlockchainClick}>
                 Check on blockchain
               </button>
             </div>
