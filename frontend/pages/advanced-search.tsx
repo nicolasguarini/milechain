@@ -6,6 +6,7 @@ import { FormEvent, useState } from "react";
 import { useMoralis } from "react-moralis";
 import Link from "next/link";
 import Spinner from "@/components/spinner";
+import Head from "next/head";
 
 interface Vehicle {
   licensePlate: string;
@@ -73,6 +74,9 @@ export default function AdvancedSearchPage() {
 
   return (
     <Layout>
+      <Head>
+        <title>Advanced Search | milechain</title>
+      </Head>
       <Container>
         <div className="flex flex-col items-center py-12">
           <h1 className="text-4xl font-bold my-3">Advanced Search</h1>

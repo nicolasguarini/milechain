@@ -9,7 +9,7 @@ import Chart from "@/components/chart";
 import Spinner from "@/components/spinner";
 import UpdateMileageModal from "@/components/modals/updateMileageModal";
 import { Vehicle, Record, MileageRecord, OwnersRecord } from "@/utils/types";
-import { chainsMap } from "@/constants/chains";
+import Head from "next/head";
 
 export default function VehiclePage() {
   const router = useRouter();
@@ -86,6 +86,9 @@ export default function VehiclePage() {
 
   return (
     <Layout>
+      <Head>
+        <title>{licensePlate} | milechain</title>
+      </Head>
       <Container>
         {isWeb3Enabled ? (
           <div className="pt-20">
@@ -101,7 +104,11 @@ export default function VehiclePage() {
                 </h2>
                 <h2 className="text-2xl text-right">
                   Owned by:{" "}
-                  <span className="underline">{vehicle?.owner.toString()}</span>
+                  <span className="underline">
+                    <a href={`/owners/${vehicle?.owner.toString()}`}>
+                      {vehicle?.owner.toString()}
+                    </a>
+                  </span>
                 </h2>
               </div>
             </div>
@@ -178,10 +185,11 @@ export default function VehiclePage() {
                                   {record.mileage.toString()} km
                                 </h3>
                                 <p className="mb-4 text-base font-normal opacity-70">
-                                  Get access to over 20+ pages including a
-                                  dashboard layout, charts, kanban board,
-                                  calendar, and pre-order E-commerce & Marketing
-                                  pages.
+                                  The mileage of this vehicle was updated to{" "}
+                                  {record.mileage.toString()}km at{" "}
+                                  {new Date(
+                                    record.timestamp * 1000
+                                  ).toLocaleString("it")}
                                 </p>
                               </li>
                             );
@@ -201,10 +209,11 @@ export default function VehiclePage() {
                                   Owner changed to {record.owner.toString()}
                                 </h3>
                                 <p className="mb-4 text-base font-normal opacity-70">
-                                  Get access to over 20+ pages including a
-                                  dashboard layout, charts, kanban board,
-                                  calendar, and pre-order E-commerce & Marketing
-                                  pages.
+                                  This vehicle's ownership changed to{" "}
+                                  {record.owner.toString()} at{" "}
+                                  {new Date(
+                                    record.timestamp * 1000
+                                  ).toLocaleString("it")}
                                 </p>
                               </li>
                             );

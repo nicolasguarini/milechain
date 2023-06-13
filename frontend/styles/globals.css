@@ -3,3 +3,25 @@
 @tailwind utilities;
 
 @import url('https://fonts.cdnfonts.com/css/helvetica-neue-55?styles=16022,15987,15991,15994');
+
+* {
+    scrollbar-width: thin;
+    scrollbar-color: #000;
+  }
+
+  /* Chrome, Edge, and Safari */
+*::-webkit-scrollbar {
+    width: 10px;
+  }
+  
+  *::-webkit-scrollbar-track {
+    background: var(--primary);
+    border-radius: 5px;
+  }
+  
+  *::-webkit-scrollbar-thumb {
+    background-color: #f5cb5c;
+    border-radius: 10px;
+    border: 1px solid #f5cb5c;
+  }
+  

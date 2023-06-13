@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { useMoralis } from "react-moralis";
 import { useEffect } from "react";
+import { chainsMap, defaultChain } from "@/constants/chains";
 
 export default function Navbar() {
   const {
@@ -10,7 +11,11 @@ export default function Navbar() {
     Moralis,
     deactivateWeb3,
     isWeb3EnableLoading,
+    chainId: chainIdHex,
   } = useMoralis();
+
+  const chainId = chainIdHex ? parseInt(chainIdHex) : defaultChain;
+  const networkName = chainsMap.get(chainId);
 
   useEffect(() => {
     if (isWeb3Enabled) return;
@@ -34,6 +39,10 @@ export default function Navbar() {
 
   return (
     <nav className="bg-darker fixed w-full z-20 top-0 left-0 font-medium">
+      <div className="w-full bg-accent text-sm text-center text-black ">
+        Current network: {networkName}{" "}
+        {!chainIdHex ? `(not connected)` : `(connected)`}
+      </div>
       <div className="max-w-screen-2xl flex flex-wrap items-center justify-between mx-auto p-4">
         <Link href="/" className="flex items-center">
           <img src="/milechain.png" className="h-8 mr-3" alt="MileChain Logo" />
@@ -95,7 +104,7 @@ export default function Navbar() {
           <ul className="flex flex-col p-4 md:p-0 mt-4 md:flex-row md:space-x-8 md:mt-0 md:border-0">
             <li>
               <a
-                href="#"
+                href="/"
                 className="block py-2 pl-3 pr-4 md:p-0"
                 aria-current="page"
               >
@@ -103,17 +112,26 @@ export default function Navbar() {
               </a>
             </li>
             <li>
-              <a href="#" className="block py-2 pl-3 pr-4 md:p-0">
+              <a
+                href="https://github.com/nicolasguarini/milechain"
+                className="block py-2 pl-3 pr-4 md:p-0"
+              >
                 About
               </a>
             </li>
             <li>
-              <a href="#" className="block py-2 pl-3 pr-4 md:p-0">
-                View on Etherscan
+              <a
+                href="https://sepolia.etherscan.io/address/0xbB2f5cccccF2659f5C33e2DF0D93688c7219C37D"
+                className="block py-2 pl-3 pr-4 md:p-0"
+              >
+                Etherscan
               </a>
             </li>
             <li>
-              <a href="#" className="block py-2 pl-3 pr-4 md:p-0">
+              <a
+                href="mailto:nguarini@studenti.uninsubria.it"
+                className="block py-2 pl-3 pr-4 md:p-0"
+              >
                 Contact
               </a>
             </li>

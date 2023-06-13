@@ -11,6 +11,7 @@ import UpdateOwnerDataModal from "@/components/modals/updateOwnerDataModal";
 import { chainsMap, defaultChain } from "@/constants/chains";
 import InvalidNetwork from "@/components/invalidNetwork";
 import { Vehicle } from "@/utils/types";
+import Head from "next/head";
 
 const fetcher = (apiURL: string) => fetch(apiURL).then((res) => res.json());
 
@@ -58,6 +59,12 @@ export default function OwnerPage() {
 
   return (
     <Layout>
+      <Head>
+        <title>
+          {address?.slice(0, 5)}...
+          {address?.slice(address?.length - 2)} | milechain
+        </title>
+      </Head>
       <Container>
         {!data ? (
           <div>Loading...</div>
@@ -89,8 +96,8 @@ export default function OwnerPage() {
               <div>
                 <div>
                   {username ? (
-                    <h3 className="text-xl font-bold text-center pt-6 pb-1 m-auto">
-                      {address}
+                    <h3 className="text-xl font-bold text-center pt-6 pb-1 m-auto underline">
+                      <a href={`/owners/${address}`}>{address}</a>
                     </h3>
                   ) : null}
                 </div>
