@@ -129,7 +129,7 @@ export default function Navbar() {
             </li>
             <li>
               <a
-                href="mailto:nguarini@studenti.uninsubria.it"
+                href="/contacts"
                 className="block py-2 pl-3 pr-4 md:p-0"
               >
                 Contact
