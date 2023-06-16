@@ -45,7 +45,7 @@ export default function OwnerPage() {
   useEffect(() => {
     if (isWeb3Enabled) {
     }
-  }, []);
+  }, [isWeb3Enabled]);
 
   if (networkName === undefined) {
     return (

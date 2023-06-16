@@ -24,7 +24,7 @@ export default function Navbar() {
         enableWeb3();
       }
     }
-  }, [isWeb3Enabled]);
+  }, [isWeb3Enabled, enableWeb3]);
 
   useEffect(() => {
     Moralis.onAccountChanged((account) => {
@@ -35,7 +35,7 @@ export default function Navbar() {
         console.log("Null account found");
       }
     });
-  }, []);
+  }, [Moralis, deactivateWeb3]);
 
   return (
     <nav className="bg-darker fixed w-full z-20 top-0 left-0 font-medium">
@@ -103,13 +103,13 @@ export default function Navbar() {
         >
           <ul className="flex flex-col p-4 md:p-0 mt-4 md:flex-row md:space-x-8 md:mt-0 md:border-0">
             <li>
-              <a
+              <Link
                 href="/"
                 className="block py-2 pl-3 pr-4 md:p-0"
                 aria-current="page"
               >
                 Home
-              </a>
+              </Link>
             </li>
             <li>
               <a
@@ -128,12 +128,9 @@ export default function Navbar() {
               </a>
             </li>
             <li>
-              <a
-                href="/contacts"
-                className="block py-2 pl-3 pr-4 md:p-0"
-              >
+              <Link href="/contacts" className="block py-2 pl-3 pr-4 md:p-0">
                 Contact
-              </a>
+              </Link>
             </li>
           </ul>
         </div>

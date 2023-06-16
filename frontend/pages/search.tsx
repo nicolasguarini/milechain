@@ -37,7 +37,13 @@ export default function Search() {
         }
       });
     setLoading(false);
-  }, [router.isReady]);
+  }, [
+    router.isReady,
+    baseUrl,
+    chainId,
+    router.query.content,
+    router.query.type,
+  ]);
 
   if (networkName === undefined) {
     return (
