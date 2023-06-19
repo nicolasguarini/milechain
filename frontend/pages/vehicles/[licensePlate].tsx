@@ -83,7 +83,7 @@ export default function VehiclePage() {
     if (isWeb3Enabled) {
       updateUI();
     }
-  }, [isWeb3Enabled, updateUI]);
+  }, [isWeb3Enabled]);
 
   return (
     <Layout>
