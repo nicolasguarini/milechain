@@ -14,6 +14,7 @@ export default function SearchBar() {
   const networkName = chainsMap.get(chainId);
   const [input, setInput] = useState("");
   const [type, setType] = useState("vehicles");
+  const [showDropdown, setShowDropdown] = useState(false);
   const router = useRouter();
 
   const handleSubmit = (e: any) => {
@@ -30,14 +31,14 @@ export default function SearchBar() {
       <form className="w-full mb-5" onSubmit={handleSubmit}>
         <div className="flex">
           <button
-            id="dropdown-button"
-            data-dropdown-toggle="dropdown"
             className="flex-shrink-0 z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center border border-primary border-r-0 rounded-l-full"
             type="button"
+            onClick={() => {
+              setShowDropdown(!showDropdown);
+            }}
           >
             {capitalize(type)}
             <svg
-              aria-hidden="true"
               className="w-4 h-4 ml-1"
               fill="currentColor"
               viewBox="0 0 20 20"
@@ -50,38 +51,7 @@ export default function SearchBar() {
               ></path>
             </svg>
           </button>
-          <div
-            id="dropdown"
-            className="z-10 hidden bg-dark text-primary divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700"
-          >
-            <ul
-              className="py-2 text-sm text-gray-700 dark:text-gray-200"
-              aria-labelledby="dropdown-button"
-            >
-              <li>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setType("vehicles");
-                  }}
-                  className="inline-flex text-primary w-full px-4 py-2 "
-                >
-                  Vehicles
-                </button>
-              </li>
-              <li>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setType("owners");
-                  }}
-                  className="inline-flex w-full text-primary px-4 py-2"
-                >
-                  Owners
-                </button>
-              </li>
-            </ul>
-          </div>
+
           <div className="relative w-full">
             <input
               type="search"
@@ -116,12 +86,45 @@ export default function SearchBar() {
             </button>
           </div>
         </div>
+        {showDropdown ? (
+          <div className="z-100 absolute bg-dark text-primary divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
+            <ul
+              className="py-2 text-sm text-gray-200"
+              aria-labelledby="dropdown-button"
+            >
+              <li>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setType("vehicles");
+                    setShowDropdown(false);
+                  }}
+                  className="inline-flex text-primary w-full px-4 py-2 "
+                >
+                  Vehicles
+                </button>
+              </li>
+              <li>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setType("owners");
+                    setShowDropdown(false);
+                  }}
+                  className="inline-flex w-full text-primary px-4 py-2"
+                >
+                  Owners
+                </button>
+              </li>
+            </ul>
+          </div>
+        ) : null}
       </form>
-      <div className="flex flex-row w-full  justify-between text-primary-darker opacity-50 text-sm m-auto">
+      <div className="flex flex-row w-full  justify-between text-primary-darker text-sm m-auto">
         <VehiclesCount />
         <OwnersCount />
       </div>
-      <div className="flex flex-row w-full justify-center">
+      <div className="flex flex-row w-full mt-2 underline justify-center">
         <Link href="/advanced-search">Advanced Search</Link>
       </div>
     </div>
