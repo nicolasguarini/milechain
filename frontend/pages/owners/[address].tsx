@@ -72,7 +72,7 @@ export default function OwnerPage() {
           <div>Failed to load</div>
         ) : (
           <div className="">
-            <div className="flex flex-row justify-between mb-16">
+            <div className="flex flex-col md:flex-row justify-between mb-16">
               <div className="flex flex-col content-start">
                 <div className="text-left w-fit">
                   {username ? (
@@ -96,14 +96,14 @@ export default function OwnerPage() {
               <div>
                 <div>
                   {username ? (
-                    <h3 className="text-xl font-bold text-center pt-6 pb-1 m-auto underline">
+                    <h3 className="text-sm md:text-xl max-w-full font-bold text-center pt-6 pb-1 m-auto underline">
                       <a href={`/owners/${address}`}>{address}</a>
                     </h3>
                   ) : null}
                 </div>
                 {isWeb3Enabled &&
                 account?.toLowerCase() == address?.toString().toLowerCase() ? (
-                  <div className="flex flex-row gap-6 justify-end pt-3">
+                  <div className="flex flex-row gap-6 justify-center md:justify-end pt-3">
                     <button
                       className="border block border-accent px-9 py-2 rounded-full"
                       onClick={() => {
@@ -148,7 +148,7 @@ export default function OwnerPage() {
                 {data?.vehicles?.map((vehicle: Vehicle) => {
                   return (
                     <div
-                      className="flex flex-row gap-20 items-center mb-3 justify-between"
+                      className="flex flex-col md:flex-row md:gap-20 items-center mb-3 justify-between"
                       key={vehicle.licensePlate}
                     >
                       <Link href={`/vehicles/${vehicle.licensePlate}`}>
@@ -162,13 +162,13 @@ export default function OwnerPage() {
 
                       {isWeb3Enabled &&
                       account?.toLowerCase() == vehicle.owner.toLowerCase() ? (
-                        <div>
+                        <div className="mt-3 mb-6">
                           <button
                             className="border block border-accent px-9 py-2 rounded-full"
                             onClick={() => {
-                              setShowMileageModal(true);
                               setLicensePlateToUpdate(vehicle.licensePlate);
                               setMileageToUpdate(vehicle.mileage);
+                              setShowMileageModal(true);
                             }}
                           >
                             Update mileage

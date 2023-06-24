@@ -93,21 +93,24 @@ export default function VehiclePage() {
       <Container>
         {isWeb3Enabled ? (
           <div className="pt-20">
-            <div className="flex flex-row justify-between">
+            <div className="flex flex-col md:flex-row justify-between">
               <div>
                 <h1 className="text-4xl font-bold border-b-2 pb-1 border-accent w-fit m-auto">
                   {licensePlate}
                 </h1>
               </div>
               <div>
-                <h2 className="text-2xl text-right">
+                <h2 className="text-2xl md:text-right text-center">
                   Current Mileage: {vehicle?.mileage.toString()} km
                 </h2>
-                <h2 className="text-2xl text-right">
+                <h2 className="text-md md:text-2xl md:text-right text-center">
                   Owned by:{" "}
                   <span className="underline">
                     <Link href={`/owners/${vehicle?.owner.toString()}`}>
-                      {vehicle?.owner.toString()}
+                      {vehicle?.owner.toString().slice(0, 8)}...
+                      {vehicle?.owner
+                        .toString()
+                        .slice(vehicle?.owner.toString().length - 4)}
                     </Link>
                   </span>
                 </h2>
@@ -162,7 +165,7 @@ export default function VehiclePage() {
                       </div>
                     ) : null}
 
-                    <div className="max-w-4xl m-auto mt-14">
+                    <div className="w-full md:max-w-4xl m-auto mt-14">
                       <Chart mileages={mileages} timestamps={timestamps} />
                     </div>
 
@@ -207,11 +210,34 @@ export default function VehiclePage() {
                                   ).toLocaleString("it")}
                                 </time>
                                 <h3 className="text-xl font-bold">
-                                  Owner changed to {record.owner.toString()}
+                                  Owner changed to
+                                  <Link
+                                    href={`/owners/${record.owner.toString()}`}
+                                    className="underline"
+                                  >
+                                    {" "}
+                                    {record.owner.toString().slice(0, 5)}...
+                                    {record.owner
+                                      .toString()
+                                      .slice(
+                                        record.owner.toString().length - 2
+                                      )}
+                                  </Link>
                                 </h3>
                                 <p className="mb-4 text-base font-normal opacity-70">
                                   This vehicles ownership changed to{" "}
-                                  {record.owner.toString()} at{" "}
+                                  <Link
+                                    href={`/owners/${record.owner.toString()}`}
+                                    className="underline"
+                                  >
+                                    {record.owner.toString().slice(0, 5)}...
+                                    {record.owner
+                                      .toString()
+                                      .slice(
+                                        record.owner.toString().length - 2
+                                      )}{" "}
+                                  </Link>
+                                  at{" "}
                                   {new Date(
                                     record.timestamp * 1000
                                   ).toLocaleString("it")}

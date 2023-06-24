@@ -17,7 +17,7 @@ export default function Home() {
           DApp for registering vehicles mileages and ownership history on
           Ethereum blockchain.
         </h1>
-        <p className="text-primary-darker opacity-50 mb-10">
+        <p className="text-primary-darker opacity-50 mb-10 text-center">
           Built with Solidity, Alchemy, IPFS and other hot technologies :)
         </p>
 

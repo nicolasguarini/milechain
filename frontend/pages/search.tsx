@@ -57,7 +57,7 @@ export default function Search() {
   return (
     <Layout>
       <Head>
-        <title>Search: {router.query.content} | milechain</title>
+        <title>Search: {router.query?.content} | milechain</title>
       </Head>
       <Container>
         <div className="w-full mb-10">
@@ -74,23 +74,26 @@ export default function Search() {
               ? data?.map((vehicle: any) => {
                   return (
                     <div
-                      className=" border-b-2 border-primary border-opacity-50 pb-6 mt-6"
+                      className="border-b-2 border-primary border-opacity-50 pb-6 mt-6"
                       key={vehicle.licensePlate}
                     >
-                      <div className="flex flex-row justify-between">
+                      <div className="flex flex-col md:flex-row md:justify-between">
                         <div>
-                          <h1 className="text-4xl font-bold border-b-2 pb-1 border-accent w-fit m-auto">
+                          <h1 className="block text-4xl font-bold border-b-2 pb-1 border-accent w-fit m-auto">
                             <Link href={`/vehicles/${vehicle.licensePlate}`}>
                               {vehicle.licensePlate}
                             </Link>
                           </h1>
                         </div>
-                        <div>
-                          <p className="text-xl text-right">
+                        <div className="pt-4 md:pt-0">
+                          <p className="text-xl md:text-right">
                             Current Mileage: {vehicle.mileage} km
                           </p>
-                          <p className="text-xl text-right border-b-2">
-                            <Link href={`/owners/${vehicle.owner}`}>
+                          <p className="text-xl md:text-right">
+                            <Link
+                              href={`/owners/${vehicle.owner}`}
+                              className="underline"
+                            >
                               Owned by:
                               {vehicle.owner.substring(0, 6) +
                                 "..." +
@@ -108,10 +111,10 @@ export default function Search() {
               : data?.map((owner: any) => {
                   return (
                     <div
-                      className=" border-b-2 border-primary border-opacity-50 pb-6 mt-6"
+                      className="border-b-2 border-primary border-opacity-50 pb-6 mt-6"
                       key={owner.address}
                     >
-                      <div className="flex flex-row justify-between">
+                      <div className="flex flex-col md:flex-row justify-between">
                         <div>
                           <h1 className="text-4xl font-bold border-b-2 pb-1 border-accent w-fit m-auto">
                             <Link href={`/owners/${owner.address}`}>
@@ -120,9 +123,8 @@ export default function Search() {
                           </h1>
                         </div>
                         <div>
-                          <p className="text-xl text-right border-b-2 mt-3">
+                          <p className="text-xl text-center  underline md:text-right mt-3">
                             <Link href={`/owners/${owner.address}`}>
-                              Owned by:
                               {owner.address.substring(0, 6) +
                                 "..." +
                                 owner.address.substring(
